@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { getTodayKST } from "@/lib/date-utils";
 
 type LessonCategory = "성인단체" | "성인개인" | "어린이개인" | "어린이단체";
 
@@ -78,7 +79,7 @@ export default function AdminLessonsPage() {
     user_id: "",
     categories: [] as LessonCategory[],
     tuition_amount: 0,
-    payment_date: new Date().toISOString().split('T')[0],
+    payment_date: getTodayKST(),
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -300,8 +301,8 @@ export default function AdminLessonsPage() {
 
       if (error) throw error;
 
-      // Step 2: Insert history record with proper date format
-      const todayDate = new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD format
+      // Step 2: Insert history record with KST date (avoid UTC timezone bug)
+      const todayDate = getTodayKST();
       console.log("📝 Inserting history record:", { 
         lesson_id: lessonId, 
         session_number: newSession,
@@ -345,8 +346,22 @@ export default function AdminLessonsPage() {
         return;
       }
 
-      const newSession = lesson.current_session - 1;
+      const sessionToRemove = lesson.current_session;
 
+      // Step 1: Delete the most recent attendance record from lesson_history FIRST
+      const { error: deleteError } = await supabase
+        .from("lesson_history")
+        .delete()
+        .eq("lesson_id", lessonId)
+        .eq("session_number", sessionToRemove);
+
+      if (deleteError) {
+        console.error("Lesson history delete error:", deleteError);
+        throw deleteError;
+      }
+
+      // Step 2: Decrement session count in lessons
+      const newSession = sessionToRemove - 1;
       const { error } = await supabase
         .from("lessons")
         .update({ current_session: newSession })
@@ -354,17 +369,35 @@ export default function AdminLessonsPage() {
 
       if (error) throw error;
 
-      await supabase
-        .from("lesson_history")
-        .delete()
-        .eq("lesson_id", lessonId)
-        .eq("session_number", lesson.current_session);
-
       await Promise.all([loadLessons(), loadLessonHistory()]);
       alert("✅ 마지막 수업이 취소되었습니다.");
     } catch (error) {
       console.error("Undo error:", error);
       alert("취소 중 오류가 발생했습니다.");
+    }
+  }
+
+  async function handleResetCalendar() {
+    if (!confirm("⚠️ 모든 출석 기록과 진도를 초기화합니다. 수강생 정보는 유지됩니다. 계속하시겠습니까?")) {
+      return;
+    }
+    try {
+      const { error: deleteError } = await supabase
+        .from("lesson_history")
+        .delete()
+        .neq("id", "00000000-0000-0000-0000-000000000000");
+      if (deleteError) throw deleteError;
+
+      await supabase
+        .from("lessons")
+        .update({ current_session: 0 })
+        .neq("id", "00000000-0000-0000-0000-000000000000");
+
+      await Promise.all([loadLessons(), loadLessonHistory()]);
+      alert("✅ 캘린더가 리셋되었습니다.");
+    } catch (error) {
+      console.error("Reset calendar error:", error);
+      alert("캘린더 리셋 중 오류가 발생했습니다.");
     }
   }
 
@@ -550,7 +583,7 @@ export default function AdminLessonsPage() {
         user_id: "",
         categories: [],
         tuition_amount: 0,
-        payment_date: new Date().toISOString().split('T')[0],
+        payment_date: getTodayKST(),
       });
       setSearchQuery("");
       setSelectedUser(null);
@@ -594,7 +627,7 @@ export default function AdminLessonsPage() {
         .from("lessons")
         .update({
           current_session: 0,
-          payment_date: new Date().toISOString().split('T')[0],
+          payment_date: getTodayKST(),
         })
         .eq("id", lessonId);
 
@@ -781,6 +814,12 @@ export default function AdminLessonsPage() {
                 }`}
               >
                 📅 {showCalendar ? "캘린더 닫기" : "캘린더 보기"}
+              </button>
+              <button
+                onClick={handleResetCalendar}
+                className="px-4 py-2 rounded-lg transition-colors font-medium text-sm whitespace-nowrap bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300"
+              >
+                🔄 캘린더 리셋
               </button>
               <button
                 onClick={() => setShowAddModal(true)}
@@ -1034,7 +1073,7 @@ export default function AdminLessonsPage() {
                             <div
                               onClick={() => {
                                 setEditingPaymentDate(lesson.id);
-                                setPaymentDateValue(lesson.payment_date || new Date().toISOString().split('T')[0]);
+                                setPaymentDateValue(lesson.payment_date || getTodayKST());
                               }}
                               className="cursor-pointer hover:text-blue-600 hover:underline"
                               title="클릭하여 편집"
@@ -1196,7 +1235,7 @@ export default function AdminLessonsPage() {
                         <p
                           onClick={() => {
                             setEditingPaymentDate(lesson.id);
-                            setPaymentDateValue(lesson.payment_date || new Date().toISOString().split('T')[0]);
+                            setPaymentDateValue(lesson.payment_date || getTodayKST());
                           }}
                           className="cursor-pointer hover:text-blue-600"
                         >
@@ -1623,7 +1662,7 @@ export default function AdminLessonsPage() {
                           user_id: "",
                           categories: [],
                           tuition_amount: 0,
-                          payment_date: new Date().toISOString().split('T')[0],
+                          payment_date: getTodayKST(),
                         });
                         setSearchQuery("");
                         setSelectedUser(null);
