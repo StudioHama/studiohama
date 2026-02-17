@@ -275,7 +275,7 @@ export default function MyLessonsPage() {
                   <strong>은행:</strong> 국민은행
                 </p>
                 <p>
-                  <strong>계좌번호:</strong> 123-456-789012
+                  <strong>계좌번호:</strong> 81140-20-4299435
                 </p>
                 <p>
                   <strong>예금주:</strong> 김포국악원
