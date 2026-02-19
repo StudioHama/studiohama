@@ -11,6 +11,8 @@ const ADMIN_NAV = [
   { href: "/admin/students", label: "회원관리" },
   { href: "/admin/lessons", label: "수업관리" },
   { href: "/admin/posts", label: "공지사항" },
+  { href: "/admin/posts/manage", label: "소식 관리" },
+  { href: "/admin/posts/new", label: "게시글 작성" },
 ];
 
 export default function AdminLayout({

@@ -108,7 +108,7 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_lessons_updated_at BEFORE UPDATE ON lessons
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Posts (Notices) Table
+-- Posts (Notices + Blog) Table
 CREATE TABLE IF NOT EXISTS posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -116,29 +116,43 @@ CREATE TABLE IF NOT EXISTS posts (
   category TEXT DEFAULT '일반',
   tag TEXT DEFAULT '일반',
   is_pinned BOOLEAN DEFAULT false,
+  thumbnail_url TEXT,
+  external_url TEXT,
   author_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add columns if table already exists
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS thumbnail_url TEXT;
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS external_url TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at);
 CREATE INDEX IF NOT EXISTS idx_posts_is_pinned ON posts(is_pinned);
 
 ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
 
--- Admins can manage all posts
-CREATE POLICY "Admins can manage posts"
+-- Admins can INSERT/UPDATE/DELETE posts (explicit policies for RLS compatibility)
+CREATE POLICY "Enable insert for admins only"
   ON posts
-  FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE profiles.id = auth.uid()
-      AND profiles.role = 'admin'
-    )
-  );
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
 
--- Active users can view posts
+CREATE POLICY "Enable update for admins only"
+  ON posts
+  FOR UPDATE
+  TO authenticated
+  USING (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'))
+  WITH CHECK (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
+
+CREATE POLICY "Enable delete for admins only"
+  ON posts
+  FOR DELETE
+  TO authenticated
+  USING (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
+
+-- Active users can view posts (notices)
 CREATE POLICY "Active users can view posts"
   ON posts
   FOR SELECT
@@ -149,6 +163,12 @@ CREATE POLICY "Active users can view posts"
       AND profiles.status = 'active'
     )
   );
+
+-- Public can view news posts (소식, 언론보도, 공지사항)
+CREATE POLICY "Public can view blog posts"
+  ON posts
+  FOR SELECT
+  USING (category IN ('소식', '언론보도', '공지사항'));
 
 CREATE TRIGGER update_posts_updated_at BEFORE UPDATE ON posts
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

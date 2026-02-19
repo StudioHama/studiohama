@@ -10,6 +10,41 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.31",
+    date: "2026-02-18",
+    changes: [
+      "블로그 목록 미리보기 태그 제거(요약글), 폰트 추가, 게시글 삭제 기능 및 카테고리 자동 분리",
+    ],
+  },
+  {
+    version: "1.30",
+    date: "2026-02-18",
+    changes: [
+      "React 호환성 오류 수정(react-quill-new 교체) 및 DB 쓰기 권한(RLS) 해결",
+    ],
+  },
+  {
+    version: "1.29",
+    date: "2026-02-18",
+    changes: [
+      "DB 쓰기 권한(RLS) 에러 수정 및 스마트 웹 에디터(사진 드래그 업로드) 적용",
+    ],
+  },
+  {
+    version: "1.28",
+    date: "2026-02-18",
+    changes: [
+      "관리자 게시글 작성(이미지 업로드 포함) 기능 구현 및 소식 페이지 DB 연동",
+    ],
+  },
+  {
+    version: "1.27",
+    date: "2026-02-18",
+    changes: [
+      "소개(Intro) 메뉴에 블로그(소식) 카드 추가 및 게시판(목록/상세) 기능 구현",
+    ],
+  },
+  {
     version: "1.25",
     date: "2026-02-18",
     changes: [

@@ -1,0 +1,2 @@
+-- Supabase Storage: public-media 버킷은 SQL이 아닌 Dashboard에서 생성합니다.
+-- 자세한 설정 방법: docs/STORAGE_SETUP.md 참고

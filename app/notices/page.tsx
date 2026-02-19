@@ -63,6 +63,7 @@ export default function NoticesPage() {
       const { data, error } = await supabase
         .from("posts")
         .select("*")
+        .eq("category", "공지사항")
         .order("is_pinned", { ascending: false })
         .order("created_at", { ascending: false });
 

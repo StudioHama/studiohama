@@ -37,3 +37,85 @@ body {
   background-color: rgba(17, 17, 17, 0.12);
   color: var(--color-text);
 }
+
+/* Quill editor & blog content: responsive images */
+.quill-editor-wrapper .ql-editor img,
+.prose-blog-content img {
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* 기본 정렬: 부모에 resize 스타일이 없을 때만 가운데 */
+.quill-editor-wrapper .ql-editor p:not([class*="ql-resize-style"]) img,
+.prose-blog-content p:not([class*="ql-resize-style"]) img {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* quill-resize-module 정렬 스타일 (부모 블록에 적용됨) */
+.ql-resize-style-left,
+.prose-blog-content .ql-resize-style-left { float: left; margin: 0 1em 1em 0; }
+.ql-resize-style-right,
+.prose-blog-content .ql-resize-style-right { float: right; margin: 0 0 1em 1em; }
+.ql-resize-style-center,
+.prose-blog-content .ql-resize-style-center { display: block; margin-left: auto; margin-right: auto; text-align: center; }
+.ql-resize-style-full,
+.prose-blog-content .ql-resize-style-full { width: 100% !important; }
+.ql-resize-style-full img,
+.prose-blog-content .ql-resize-style-full img { width: 100%; }
+
+/* Quill font dropdown - Korean fonts */
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="gowun-dodum"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="gowun-dodum"]::before {
+  content: "고운돋움";
+  font-family: var(--font-gowun-dodum), sans-serif;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanum-myeongjo"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanum-myeongjo"]::before {
+  content: "나눔명조";
+  font-family: var(--font-nanum-myeongjo), serif;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanum-gothic"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanum-gothic"]::before {
+  content: "나눔고딕";
+  font-family: var(--font-nanum-gothic), sans-serif;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="jua"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="jua"]::before {
+  content: "Jua";
+  font-family: var(--font-jua), sans-serif;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="gowun-batang"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="gowun-batang"]::before {
+  content: "고운바탕";
+  font-family: var(--font-gowun-batang), serif;
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanum-pen"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanum-pen"]::before {
+  content: "나눔펜";
+  font-family: var(--font-nanum-pen), cursive;
+}
+.ql-font-gowun-dodum {
+  font-family: var(--font-gowun-dodum), sans-serif;
+}
+.ql-font-nanum-myeongjo {
+  font-family: var(--font-nanum-myeongjo), serif;
+}
+.ql-font-nanum-gothic {
+  font-family: var(--font-nanum-gothic), sans-serif;
+}
+.ql-font-jua {
+  font-family: var(--font-jua), sans-serif;
+}
+.ql-font-gowun-batang {
+  font-family: var(--font-gowun-batang), serif;
+}
+.ql-font-nanum-pen {
+  font-family: var(--font-nanum-pen), cursive;
+}
+
+/* Blog detail content - apply Korean font */
+.prose-blog-content {
+  font-family: var(--font-nanum-myeongjo), "Nanum Myeongjo", serif;
+}
