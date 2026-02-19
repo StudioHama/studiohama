@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+import { stripHtml } from "@/lib/html-utils";
 
 export const metadata: Metadata = {
   title: "국악원 소식 | 김포국악원 (Gimpo Gugak Center)",
@@ -14,11 +15,6 @@ function formatDate(dateStr: string) {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}.${m}.${day}`;
-}
-
-function stripHtml(html: string): string {
-  if (!html) return "";
-  return html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
 }
 
 export default async function BlogListPage() {
@@ -82,9 +78,9 @@ export default async function BlogListPage() {
                       {post.title}
                     </h2>
                     {post.content && (
-                      <p className="text-sm text-gray-600 mt-1 line-clamp-2 overflow-hidden text-ellipsis">
-                        {stripHtml(post.content).slice(0, 100)}
-                        {stripHtml(post.content).length > 100 ? "…" : ""}
+                      <p className="text-sm text-gray-600 mt-1">
+                        {stripHtml(post.content).slice(0, 15)}
+                        {stripHtml(post.content).length > 15 ? "…" : ""}
                       </p>
                     )}
                   </div>
