@@ -1,7 +1,7 @@
 import Analytics from "../components/Analytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
-import { Noto_Serif_KR, Noto_Sans_KR } from "next/font/google";
+import { Noto_Serif_KR, Noto_Sans_KR, Gowun_Dodum, Nanum_Myeongjo } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
 
@@ -19,6 +19,20 @@ const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans",
   display: "swap",
   preload: true,
+});
+
+const gowunDodum = Gowun_Dodum({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-gowun-dodum",
+  display: "swap",
+});
+
+const nanumMyeongjo = Nanum_Myeongjo({
+  subsets: ["latin"],
+  weight: ["400", "700", "800"],
+  variable: "--font-nanum-myeongjo",
+  display: "swap",
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gimpo-gugak.kr";
@@ -124,7 +138,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" suppressHydrationWarning className={`${notoSerif.variable} ${notoSans.variable}`}>
+    <html lang="ko" suppressHydrationWarning className={`${notoSerif.variable} ${notoSans.variable} ${gowunDodum.variable} ${nanumMyeongjo.variable}`}>
       <body className="font-sans min-h-screen bg-[#ffffff] text-[#111111] antialiased">
         <script
           type="application/ld+json"

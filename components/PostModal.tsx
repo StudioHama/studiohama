@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { Quill } from "react-quill-new";
 import { sanitizeHtml } from "@/lib/html-utils";
-import { gowunDodum, nanumMyeongjo } from "@/lib/fonts";
 import "react-quill-new/dist/quill.snow.css";
 import "quill-resize-module/dist/resize.css";
 
@@ -338,7 +337,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">내용 *</label>
               <div
-                className={`quill-editor-wrapper [&_.ql-container]:min-h-[400px] [&_.ql-editor]:min-h-[380px] ${gowunDodum.variable} ${nanumMyeongjo.variable}`}
+                className="quill-editor-wrapper [&_.ql-container]:min-h-[400px] [&_.ql-editor]:min-h-[380px]"
                 onDrop={handleEditorDrop}
                 onDragOver={(e) => e.preventDefault()}
               >
