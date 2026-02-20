@@ -7,7 +7,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "국악원 소식 | 김포국악원 (Gimpo Gugak Center)",
-  description: "김포국악원의 소식과 블로그를 확인하세요.",
+  description: "김포국악원의 소식을 확인하세요.",
 };
 
 function formatDate(dateStr: string) {
