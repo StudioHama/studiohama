@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.56",
+    date: "2026-02-10",
+    changes: [
+      "에디터 코드 블록(</>) 버튼 활성화 및 하단 서명 지도 이미지 경로 오류 수정",
+    ],
+  },
+  {
     version: "1.55",
     date: "2026-02-10",
     changes: [

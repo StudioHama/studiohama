@@ -79,6 +79,10 @@ body {
 /* Blog detail content - use system font stack for performance */
 .blog-detail-article {
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  word-break: keep-all !important; /* 모바일: '무형문화재' 등 한글 단어 끊김 방지 */
+}
+.blog-detail-article .ql-editor {
+  word-break: keep-all !important;
 }
 
 /* FORCE Quill to show numbers instead of Small/Large */
