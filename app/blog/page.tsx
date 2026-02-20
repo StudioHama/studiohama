@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
-export const revalidate = 60; // Cache for 60 seconds (ISR)
+export const dynamic = "force-static";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "국악원 소식 | 김포국악원 (Gimpo Gugak Center)",

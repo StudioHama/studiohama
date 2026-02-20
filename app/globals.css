@@ -48,20 +48,6 @@ body {
 }
 
 
-/* Fix Quill Editor & Viewer Paragraphs/Line-breaks */
-.ql-editor p {
-  margin-bottom: 0.5rem;
-  min-height: 1.5rem; /* Prevents empty paragraphs from collapsing */
-}
-.ql-editor p:empty::before,
-.ql-editor p:has(br:only-child)::before {
-  content: '\00a0'; /* Force empty lines to take up space */
-  display: inline-block;
-}
-.ql-editor {
-  line-height: 1.6;
-  white-space: pre-wrap; /* Ensure multiple spaces and wraps are respected */
-}
 
 /* Quill editor & blog content: responsive images */
 .quill-editor-wrapper .ql-editor img,
@@ -105,4 +91,18 @@ body {
 }
 .ql-snow .ql-picker.ql-size .ql-picker-item:not([data-value])::before {
   content: '16px' !important;
+}
+
+/* FORCE Quill Line Breaks against Tailwind Reset */
+.ql-editor p, .ql-snow .ql-editor p {
+  margin-bottom: 1em !important;
+  min-height: 1.2em !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+.ql-editor p:empty::before,
+.ql-editor p:has(br)::before,
+.ql-snow .ql-editor p:empty::before {
+  content: '\00a0' !important;
+  display: block !important;
 }

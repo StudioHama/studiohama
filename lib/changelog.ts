@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.43",
+    date: "2026-02-10",
+    changes: [
+      "줄바꿈 강제 적용(!important), Quill CSS 로딩 분리(LCP 렌더링 차단 해소), 블로그 목록 정적 생성(SSG) 강제 적용",
+    ],
+  },
+  {
     version: "1.42",
     date: "2026-02-10",
     changes: [
