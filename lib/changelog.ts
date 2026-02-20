@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.48",
+    date: "2026-02-10",
+    changes: [
+      "에디터 툴바 메뉴(Normal -> 본문 등) 한글화 및 뷰어(상세 페이지) 줄바꿈/여백(Tailwind 충돌) 강제 동기화",
+    ],
+  },
+  {
     version: "1.47",
     date: "2026-02-10",
     changes: [

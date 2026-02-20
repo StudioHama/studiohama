@@ -93,12 +93,27 @@ body {
   content: '16px' !important;
 }
 
-/* FORCE Quill Line Breaks against Tailwind Reset */
+/* Quill 에디터 & 뷰어 여백 및 줄간격 완벽 동기화 */
+.ql-editor {
+  line-height: 1.8 !important;
+}
 .ql-editor p, .ql-snow .ql-editor p {
-  margin-bottom: 1em !important;
-  min-height: 1.2em !important;
-  white-space: pre-wrap !important;
+  margin-bottom: 1.2em !important;
+  min-height: 1.8em !important;
   word-break: break-word !important;
+  white-space: pre-wrap !important;
+}
+.ql-editor h1, .ql-snow .ql-editor h1 {
+  margin-top: 1.5em !important;
+  margin-bottom: 0.8em !important;
+}
+.ql-editor h2, .ql-snow .ql-editor h2 {
+  margin-top: 1.2em !important;
+  margin-bottom: 0.6em !important;
+}
+.ql-editor h3, .ql-snow .ql-editor h3 {
+  margin-top: 1em !important;
+  margin-bottom: 0.5em !important;
 }
 .ql-editor p:empty::before,
 .ql-editor p:has(br)::before,
@@ -127,4 +142,22 @@ body {
 }
 .ql-snow .ql-picker.ql-font .ql-picker-item:not([data-value])::before {
   content: '기본폰트' !important;
+}
+
+/* 제목(Header) 툴바 한글화 */
+.ql-snow .ql-picker.ql-header .ql-picker-label:not([data-value])::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item:not([data-value])::before {
+  content: '본문' !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: '제목 1' !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: '제목 2' !important;
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: '제목 3' !important;
 }
