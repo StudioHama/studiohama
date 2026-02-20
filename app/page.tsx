@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+
+const HomeBadges = dynamic(() => import("@/components/home/HomeBadges").then((m) => ({ default: m.HomeBadges })));
+const HomeConnect = dynamic(() => import("@/components/home/HomeConnect").then((m) => ({ default: m.HomeConnect })));
 
 // 👇 외부 이미지 주소
 const HERO_IMAGE =
@@ -35,7 +39,7 @@ export default function HomePage() {
           height={563}
           className="w-full aspect-video object-cover"
           // 👇 sizes 속성을 조금 더 현실적으로 조정 (모바일/PC 구분)
-          sizes="(max-width: 768px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 1200px"
         />
       </figure>
 
@@ -85,61 +89,8 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* 하단 인증 배지 섹션 */}
-      <section className="mt-16 flex flex-col items-center border-t border-gray-100 pt-10" aria-label="인증 및 파트너 로고">
-        <p className="text-xs text-gray-500 mb-6 uppercase tracking-widest">Authorized By</p>
-        <div className="flex flex-wrap items-center justify-center gap-8 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-          <Image
-            src="/badge-10th.webp"
-            alt="김포국악원 10주년 (SINCE 2015)"
-            width={140}
-            height={52}
-            className="h-8 w-auto object-contain sm:h-10"
-          />
-          <Image
-            src="/badge-foundation.webp"
-            alt="김포문화재단"
-            width={100}
-            height={20}
-            className="h-5 w-auto object-contain sm:h-6"
-          />
-          <Image
-            src="/badge-education.webp"
-            alt="교육기부 진로체험 인증기관 (교육부)"
-            width={150}
-            height={100}
-            className="h-10 w-auto object-contain sm:h-12"
-          />
-        </div>
-      </section>
-
-      <section aria-label="Connect" className="mt-16 pt-10 border-t border-[#111]/10">
-        <p className="text-xs text-gray-500 uppercase tracking-wider mb-4">Connect</p>
-        <ul className="flex flex-col gap-3">
-          <li>
-            <a
-              href="https://instagram.com/seodo_music"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-500 hover:text-black transition-colors inline-flex items-center gap-1 group"
-            >
-              Instagram (@seodo_music)
-              <span className="text-[10px] opacity-70 group-hover:translate-x-0.5 transition-transform" aria-hidden>↗</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://blog.naver.com/gimpogugak"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-500 hover:text-black transition-colors inline-flex items-center gap-1 group"
-            >
-              Naver Blog
-              <span className="text-[10px] opacity-70 group-hover:translate-x-0.5 transition-transform" aria-hidden>↗</span>
-            </a>
-          </li>
-        </ul>
-      </section>
+      <HomeBadges />
+      <HomeConnect />
     </article>
   );
 }

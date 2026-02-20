@@ -1,13 +1,12 @@
-import Analytics from "../components/Analytics";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Noto_Serif_KR, Noto_Sans_KR, Gowun_Dodum, Nanum_Myeongjo } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
+import { AnalyticsSpeedInsights } from "../components/AnalyticsSpeedInsights";
 
 const notoSerif = Noto_Serif_KR({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "600", "700"],
   variable: "--font-noto-serif",
   display: "swap",
   preload: true,
@@ -30,7 +29,7 @@ const gowunDodum = Gowun_Dodum({
 
 const nanumMyeongjo = Nanum_Myeongjo({
   subsets: ["latin"],
-  weight: ["400", "700", "800"],
+  weight: ["400", "700"],
   variable: "--font-nanum-myeongjo",
   display: "swap",
 });
@@ -164,8 +163,7 @@ export default function RootLayout({
           {children}
         </main>
         
-        <Analytics />
-        <SpeedInsights />
+        <AnalyticsSpeedInsights />
       </body>
     </html>
   );

@@ -180,7 +180,7 @@ export function Navbar() {
           />
         </Link>
 
-        <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0 overflow-x-auto overflow-y-hidden">
+        <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0 overflow-x-auto overflow-y-hidden min-h-[40px]">
           {(NAV as NavItemSimple[]).map((item) => {
             const isActive = pathname === item.href || (item.href === "/intro" && pathname.startsWith("/intro")) || (item.href === "/blog" && pathname.startsWith("/blog"));
             return (
@@ -195,7 +195,7 @@ export function Navbar() {
               </Link>
             );
           })}
-          <div className="shrink-0 pl-1 sm:pl-2 border-l border-gray-200">
+          <div className="shrink-0 pl-1 sm:pl-2 border-l border-gray-200 min-h-[36px] flex items-center">
             <AuthButton isMobile={true} />
           </div>
         </div>

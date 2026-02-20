@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.60",
+    date: "2026-02-20",
+    changes: [
+      "PageSpeed 최적화: LCP(히어로 이미지 sizes 1200px), CLS 방지(배지/Navbar min-height), 폰트 다이어트(Noto Serif 600, Nanum 800 제거), browserslist 정리, 홈 하단 섹션·Analytics/SpeedInsights dynamic import",
+    ],
+  },
+  {
     version: "1.59",
     date: "2026-02-10",
     changes: [
