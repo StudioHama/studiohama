@@ -93,27 +93,28 @@ body {
   content: '16px' !important;
 }
 
-/* Quill 에디터 & 뷰어 여백 및 줄간격 완벽 동기화 */
+/* Quill 에디터 & 뷰어 여백 및 줄간격 완벽 동기화 (과도한 여백 축소 및 단어 보호) */
 .ql-editor {
-  line-height: 1.8 !important;
+  line-height: 1.6 !important;
+  word-break: keep-all !important; /* 한글 단어 중간에 끊어지지 않도록 보호 */
+  overflow-wrap: break-word !important;
 }
 .ql-editor p, .ql-snow .ql-editor p {
-  margin-bottom: 1.2em !important;
-  min-height: 1.8em !important;
-  word-break: break-word !important;
+  margin-bottom: 0.1em !important; /* 태평양 여백 대폭 축소 */
+  min-height: 1.6em !important;
   white-space: pre-wrap !important;
 }
 .ql-editor h1, .ql-snow .ql-editor h1 {
-  margin-top: 1.5em !important;
-  margin-bottom: 0.8em !important;
+  margin-top: 1.0em !important;
+  margin-bottom: 0.4em !important;
 }
 .ql-editor h2, .ql-snow .ql-editor h2 {
-  margin-top: 1.2em !important;
-  margin-bottom: 0.6em !important;
+  margin-top: 0.8em !important;
+  margin-bottom: 0.3em !important;
 }
 .ql-editor h3, .ql-snow .ql-editor h3 {
-  margin-top: 1em !important;
-  margin-bottom: 0.5em !important;
+  margin-top: 0.6em !important;
+  margin-bottom: 0.25em !important;
 }
 .ql-editor p:empty::before,
 .ql-editor p:has(br)::before,

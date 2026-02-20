@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.49",
+    date: "2026-02-10",
+    changes: [
+      "뷰어 화면의 과도한 문단 여백(margin) 축소 및 한글 단어 잘림(word-break) 현상 방지",
+    ],
+  },
+  {
     version: "1.48",
     date: "2026-02-10",
     changes: [
