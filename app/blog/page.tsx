@@ -78,7 +78,7 @@ export default async function BlogListPage() {
         국악원 소식
       </h1>
       <p className="text-[#666] mb-10">
-        김포국악원의 소식과 블로그를 확인하세요.
+        김포국악원의 소식을 확인하세요.
       </p>
 
       {items.length === 0 ? (
