@@ -33,9 +33,10 @@ const QUILL_MODULES = (imageHandler: () => void) => ({
       [{ font: [false, "gowunDodum", "nanumMyeongjo"] }],
       [{ size: ["10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px"] }],
       [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "link"],
+      ["bold", "italic", "underline", "strike"],
       [{ align: [] }],
-      ["image"],
+      ["link", "image"],
+      ["clean"],
     ],
     handlers: { image: imageHandler },
   },
@@ -48,7 +49,20 @@ const QUILL_MODULES = (imageHandler: () => void) => ({
   },
 });
 
-const QUILL_FORMATS = ["font", "size", "header", "bold", "italic", "link", "align", "image", "resize-inline", "resize-block"];
+const QUILL_FORMATS = [
+  "font",
+  "size",
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "align",
+  "link",
+  "image",
+  "resize-inline",
+  "resize-block",
+];
 
 export type PostForEdit = {
   id: string;
