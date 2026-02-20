@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.42",
+    date: "2026-02-10",
+    changes: [
+      "성능 다이어트: 무거운 웹 폰트 제거, 블로그 목록을 텍스트(언론보도) 형식으로 경량화, 에디터 숫자 크기 강제 적용",
+    ],
+  },
+  {
     version: "1.41",
     date: "2026-02-10",
     changes: [

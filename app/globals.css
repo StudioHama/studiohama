@@ -1,8 +1,3 @@
-@font-face { font-family: 'Pretendard-Regular'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: 'MapoAemin'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/MapoAemin.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
-@font-face { font-family: 'KyoboHand'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/KyoboHand.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Jalnan'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -52,15 +47,6 @@ body {
   border-radius: 8px 8px 0 0;
 }
 
-/* Show numerical values in the Quill size dropdown */
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value]::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value]::before {
-  content: attr(data-value) !important;
-}
-/* Default label when no size is selected */
-.ql-snow .ql-picker.ql-size .ql-picker-label::before {
-  content: '16px' !important;
-}
 
 /* Fix Quill Editor & Viewer Paragraphs/Line-breaks */
 .ql-editor p {
@@ -104,28 +90,19 @@ body {
 .ql-resize-style-full img,
 .blog-detail-article .ql-resize-style-full img { width: 100%; }
 
-/* Quill font dropdown - Korean fonts (Pretendard, Noto Sans KR, Nanum Myeongjo, Mapo Aemin, Kyobo Hand, Jalnan) */
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="pretendard"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="pretendard"]::before { content: "프리텐다드"; font-family: "Pretendard-Regular", sans-serif; }
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="notosans"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="notosans"]::before { content: "노토산스"; font-family: "Noto Sans KR", sans-serif; }
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nanummyeongjo"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nanummyeongjo"]::before { content: "나눔명조"; font-family: "Nanum Myeongjo", serif; }
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="mapoaemin"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="mapoaemin"]::before { content: "마포애민"; font-family: "MapoAemin", serif; }
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="kyobohand"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="kyobohand"]::before { content: "교보손글씨"; font-family: "KyoboHand", cursive; }
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="jalnan"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="jalnan"]::before { content: "잘난체"; font-family: "Jalnan", sans-serif; }
-
-.ql-font-pretendard { font-family: "Pretendard-Regular", sans-serif; }
-.ql-font-notosans { font-family: "Noto Sans KR", sans-serif; }
-.ql-font-nanummyeongjo { font-family: "Nanum Myeongjo", serif; }
-.ql-font-mapoaemin { font-family: "MapoAemin", serif; }
-.ql-font-kyobohand { font-family: "KyoboHand", cursive; }
-.ql-font-jalnan { font-family: "Jalnan", sans-serif; }
-
-/* Blog detail content - apply Korean font (globals.css loaded, .ql-font-* applies automatically) */
+/* Blog detail content - use system font stack for performance */
 .blog-detail-article {
-  font-family: "Nanum Myeongjo", serif;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* FORCE Quill to show numbers instead of Small/Large */
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: attr(data-value) !important;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before {
+  content: '16px' !important; /* Default size */
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item:not([data-value])::before {
+  content: '16px' !important;
 }

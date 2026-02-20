@@ -21,12 +21,9 @@ const BUCKET = "public-media";
 const BLOG_CONTENT_PATH = "blog-content";
 const DEFAULT_CATEGORY = "소식";
 
-const FONT_WHITELIST = ["pretendard", "notosans", "nanummyeongjo", "mapoaemin", "kyobohand", "jalnan"];
-
 const QUILL_MODULES = (imageHandler: () => void) => ({
   toolbar: {
     container: [
-      [{ font: ["", ...FONT_WHITELIST] }],
       [{ size: ["10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px"] }],
       [{ header: [1, 2, 3, false] }],
       ["bold", "italic"],
@@ -44,7 +41,7 @@ const QUILL_MODULES = (imageHandler: () => void) => ({
   },
 });
 
-const QUILL_FORMATS = ["font", "size", "header", "bold", "italic", "align", "image", "resize-inline", "resize-block"];
+const QUILL_FORMATS = ["size", "header", "bold", "italic", "align", "image", "resize-inline", "resize-block"];
 
 export type PostForEdit = {
   id: string;
@@ -111,9 +108,6 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       const Quill = (await import("quill")).default;
       const QuillResize = (await import("quill-resize-module")).default;
       Quill.register("modules/resize", QuillResize);
-      const Font = Quill.import("formats/font");
-      (Font as { whitelist: string[] }).whitelist = FONT_WHITELIST;
-      Quill.register("formats/font", Font, true);
       setEditorReady(true);
     };
     init();
