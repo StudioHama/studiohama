@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeHtml } from "@/lib/html-utils";
+import { uploadBlogImage } from "@/lib/upload-image";
 
 // ⚠️ react-quill-new / quill are NOT statically imported here.
 // All Quill module loading and format registration happens inside the
@@ -19,9 +20,15 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
   ),
 });
 
-const BUCKET = "public-media";
-const BLOG_CONTENT_PATH = "blog-content";
+const BUCKET = "public-media"; // 썸네일용; 본문 이미지는 lib/upload-image 사용
 const DEFAULT_CATEGORY = "소식";
+
+type QuillEditor = {
+  getSelection: (x: boolean) => { index: number; length: number } | null;
+  getLength: () => number;
+  insertEmbed: (i: number, t: string, u: string, s: string) => void;
+  setSelection: (i: number, l: number) => void;
+};
 
 const QUILL_MODULES = (imageHandler: () => void) => ({
   toolbar: {
@@ -118,21 +125,23 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
     }
   }, [editingPost]);
 
-  const uploadImageAndInsert = useCallback(async (file: File) => {
-    const editor = (quillRef.current as { getEditor?: () => { getSelection: (x: boolean) => { index: number; length: number } | null; getLength: () => number; insertEmbed: (i: number, t: string, u: string, s: string) => void; setSelection: (i: number, l: number) => void } })?.getEditor?.();
-    if (!editor) return;
-    const range = editor.getSelection(true) ?? { index: editor.getLength(), length: 0 };
-    const ext = file.name.split(".").pop() || "jpg";
-    const path = `${BLOG_CONTENT_PATH}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await supabase.storage.from(BUCKET).upload(path, file, { upsert: true });
-    if (error) {
-      alert(`이미지 업로드 실패: ${error.message}`);
-      return;
-    }
-    const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-    editor.insertEmbed(range.index, "image", data.publicUrl, "user");
-    editor.setSelection(range.index + 1, 0);
-  }, [supabase]);
+  const uploadImageAndInsert = useCallback(
+    async (file: File, atIndex?: number) => {
+      const editor = (quillRef.current as { getEditor?: () => QuillEditor })?.getEditor?.();
+      if (!editor) return;
+      const range = editor.getSelection(true) ?? { index: editor.getLength(), length: 0 };
+      const insertIndex = atIndex ?? range.index;
+
+      const result = await uploadBlogImage(supabase, file);
+      if ("error" in result) {
+        alert(`이미지 업로드 실패: ${result.error}`);
+        return;
+      }
+      editor.insertEmbed(insertIndex, "image", result.url, "user");
+      editor.setSelection(insertIndex + 1, 0);
+    },
+    [supabase]
+  );
 
   useEffect(() => {
     const init = async () => {
@@ -197,6 +206,34 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       await uploadImageAndInsert(file);
     }
   }, [uploadImageAndInsert]);
+
+  /** 붙여넣기 시 이미지가 있으면 Base64 대신 Storage 업로드 후 URL 삽입 */
+  const handleEditorPaste = useCallback(
+    async (e: React.ClipboardEvent) => {
+      if (sourceMode) return; // HTML 소스 모드에서는 기본 동작 유지
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      const imageFiles: File[] = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.kind === "file" && item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) imageFiles.push(file);
+        }
+      }
+      if (imageFiles.length === 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const editor = (quillRef.current as { getEditor?: () => QuillEditor })?.getEditor?.();
+      if (!editor) return;
+      let index = editor.getSelection(true)?.index ?? editor.getLength();
+      for (const file of imageFiles) {
+        await uploadImageAndInsert(file, index);
+        index += 1;
+      }
+    },
+    [uploadImageAndInsert, sourceMode]
+  );
 
   const modules = QUILL_MODULES(imageHandler);
 
@@ -418,6 +455,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
                 className="quill-editor-wrapper [&_.ql-container]:min-h-[400px] [&_.ql-editor]:min-h-[380px]"
                 onDrop={handleEditorDrop}
                 onDragOver={(e) => e.preventDefault()}
+                onPaste={handleEditorPaste}
               >
                 {!editorReady ? (
                   <div className="min-h-[400px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-50 text-gray-500">

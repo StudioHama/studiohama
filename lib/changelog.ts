@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.62",
+    date: "2026-02-22",
+    changes: [
+      "블로그 에디터 이미지 Base64 제거: Supabase Storage 업로드 유틸(lib/upload-image.ts) 추가, 툴바 이미지 버튼·드래그앤드롭·붙여넣기 시 URL 삽입으로 DB 용량 절감 및 Next.js Image 최적화 활용",
+    ],
+  },
+  {
     version: "1.61",
     date: "2026-02-20",
     changes: [
