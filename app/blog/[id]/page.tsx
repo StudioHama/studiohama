@@ -8,6 +8,7 @@ import { stripHtml, sanitizeHtml } from "@/lib/html-utils";
 import "react-quill-new/dist/quill.snow.css";
 
 import ShareButtonLazy from "@/components/ShareButtonLazy";
+import BlogContent from "@/components/BlogContent";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -149,13 +150,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <p className="text-sm text-gray-500">{formatDate(post.created_at)}</p>
       </header>
 
-      <div className="ql-snow">
-        <div
-          className="ql-editor"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
-          style={{ padding: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-        />
-      </div>
+      <BlogContent html={sanitizeHtml(post.content)} />
 
       {/* Wrap in Suspense so the heavy map section doesn't block FCP/LCP.
           The map image itself also carries loading="lazy" for belt-and-suspenders. */}
