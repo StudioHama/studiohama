@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.63",
+    date: "2026-02-22",
+    changes: [
+      "블로그 예약 발행(Scheduled Publishing): published_at 컬럼 추가, 관리자 UI에 발행 일시 입력, 예약된 글은 관리 목록에서 흐리게 표시 및 '예약됨' 배지, 공개 페이지는 published_at <= NOW()만 노출",
+    ],
+  },
+  {
     version: "1.62",
     date: "2026-02-22",
     changes: [

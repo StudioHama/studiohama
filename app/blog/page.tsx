@@ -66,8 +66,9 @@ export default async function BlogListPage() {
   const supabase = await createClient();
   const { data: posts } = await supabase
     .from("posts")
-    .select("id, title, external_url, created_at")
+    .select("id, title, external_url, created_at, published_at")
     .eq("category", "소식")
+    .lte("published_at", new Date().toISOString())
     .order("created_at", { ascending: false });
 
   const items = posts ?? [];
@@ -92,7 +93,7 @@ export default async function BlogListPage() {
               <BlogListItem
                 href={post.external_url || `/blog/${post.id}`}
                 title={post.title}
-                date={formatDate(post.created_at)}
+                date={formatDate(post.published_at ?? post.created_at)}
                 isExternal={!!post.external_url}
               />
             </li>

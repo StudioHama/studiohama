@@ -76,6 +76,7 @@ export type PostForEdit = {
   meta_title: string | null;
   meta_description: string | null;
   meta_keywords: string | null;
+  published_at: string | null;
 };
 
 type Props = {
@@ -93,6 +94,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [metaKeywords, setMetaKeywords] = useState("");
+  const [publishedAt, setPublishedAt] = useState("");
   const [saving, setSaving] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
   const [sourceMode, setSourceMode] = useState(false);
@@ -103,6 +105,17 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
 
   const isEdit = !!editingPost;
 
+  const toDatetimeLocal = (iso: string | null) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const h = String(d.getHours()).padStart(2, "0");
+    const min = String(d.getMinutes()).padStart(2, "0");
+    return `${y}-${m}-${day}T${h}:${min}`;
+  };
+
   useEffect(() => {
     if (editingPost) {
       setTitle(editingPost.title);
@@ -112,6 +125,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setMetaTitle(editingPost.meta_title || "");
       setMetaDescription(editingPost.meta_description || "");
       setMetaKeywords(editingPost.meta_keywords || "");
+      setPublishedAt(toDatetimeLocal(editingPost.published_at));
     } else {
       setTitle("");
       setContent("");
@@ -122,6 +136,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setMetaTitle("");
       setMetaDescription("");
       setMetaKeywords("");
+      setPublishedAt(toDatetimeLocal(new Date().toISOString()));
     }
   }, [editingPost]);
 
@@ -295,6 +310,9 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       }
 
       const { data: { user } } = await supabase.auth.getUser();
+      const publishedAtValue = publishedAt.trim()
+        ? new Date(publishedAt).toISOString()
+        : new Date().toISOString();
       const payload = {
         title: title.trim(),
         content: sanitizeHtml(content.trim()),
@@ -306,6 +324,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
         meta_title: metaTitle.trim() || null,
         meta_description: metaDescription.trim() || null,
         meta_keywords: metaKeywords.trim() || null,
+        published_at: publishedAtValue,
       };
 
       if (isEdit && editingPost) {
@@ -400,6 +419,17 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <p className="text-xs text-gray-500 mt-1">언론보도인 경우 기사 링크를 입력하세요.</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">발행 일시</label>
+              <input
+                type="datetime-local"
+                value={publishedAt}
+                onChange={(e) => setPublishedAt(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <p className="text-xs text-gray-500 mt-1">미래 시각을 선택하면 예약 발행됩니다.</p>
             </div>
 
             <details className="border border-gray-200 rounded-lg">

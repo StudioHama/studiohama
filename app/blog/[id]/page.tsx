@@ -19,7 +19,8 @@ export async function generateStaticParams() {
     const { data: posts } = await supabase
       .from("posts")
       .select("id")
-      .eq("category", "소식");
+      .eq("category", "소식")
+      .lte("published_at", new Date().toISOString());
     return (posts ?? []).map((post) => ({ id: String(post.id) }));
   } catch {
     return [];
@@ -38,6 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .select("title, content, thumbnail_url, meta_title, meta_description, meta_keywords")
     .eq("id", id)
     .eq("category", "소식")
+    .lte("published_at", new Date().toISOString())
     .single();
 
   if (!data) {
@@ -134,9 +136,10 @@ export default async function BlogDetailPage({ params }: Props) {
   const supabase = createClientForBuild();
   const { data: post, error } = await supabase
     .from("posts")
-    .select("id, title, content, created_at")
+    .select("id, title, content, created_at, published_at")
     .eq("id", id)
     .eq("category", "소식")
+    .lte("published_at", new Date().toISOString())
     .single();
 
   if (error || !post) {
@@ -149,7 +152,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#111] mb-2">
           {post.title}
         </h1>
-        <p className="text-sm text-gray-500">{formatDate(post.created_at)}</p>
+        <p className="text-sm text-gray-500">{formatDate(post.published_at ?? post.created_at)}</p>
       </header>
 
       <BlogContent html={sanitizeHtml(post.content)} />

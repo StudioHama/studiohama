@@ -12,6 +12,7 @@ type Post = {
   title: string;
   category: string;
   created_at: string;
+  published_at: string | null;
 };
 
 export default function AdminPostsManagePage() {
@@ -55,7 +56,7 @@ export default function AdminPostsManagePage() {
     try {
       const { data, error } = await supabase
         .from("posts")
-        .select("id, title, category, created_at")
+        .select("id, title, category, created_at, published_at")
         .eq("category", "소식")
         .order("created_at", { ascending: false });
 
@@ -70,7 +71,7 @@ export default function AdminPostsManagePage() {
   async function openEditModal(post: Post) {
     const { data, error } = await supabase
       .from("posts")
-      .select("id, title, content, thumbnail_url, external_url, meta_title, meta_description, meta_keywords")
+      .select("id, title, content, thumbnail_url, external_url, meta_title, meta_description, meta_keywords, published_at")
       .eq("id", post.id)
       .eq("category", "소식")
       .single();
@@ -89,6 +90,7 @@ export default function AdminPostsManagePage() {
       meta_title: data.meta_title,
       meta_description: data.meta_description,
       meta_keywords: data.meta_keywords,
+      published_at: data.published_at ?? null,
     });
     setIsModalOpen(true);
   }
@@ -187,17 +189,29 @@ export default function AdminPostsManagePage() {
                 </tr>
               </thead>
               <tbody>
-                {posts.map((post) => (
-                  <tr key={post.id} className="border-b border-gray-100 hover:bg-gray-50/50">
+                {posts.map((post) => {
+                  const isScheduled = post.published_at && new Date(post.published_at) > new Date();
+                  return (
+                  <tr
+                    key={post.id}
+                    className={`border-b border-gray-100 hover:bg-gray-50/50 ${isScheduled ? "opacity-50" : ""}`}
+                  >
                     <td className="px-4 py-3">
-                      <Link
-                        href={`/blog/${post.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline font-medium truncate max-w-[200px] block"
-                      >
-                        {post.title}
-                      </Link>
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/blog/${post.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline font-medium truncate max-w-[200px] block"
+                        >
+                          {post.title}
+                        </Link>
+                        {isScheduled && (
+                          <span className="shrink-0 px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 rounded">
+                            예약됨 (Scheduled)
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-gray-600">{post.category}</td>
                     <td className="px-4 py-3 text-gray-600">{formatDate(post.created_at)}</td>
@@ -218,7 +232,8 @@ export default function AdminPostsManagePage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
