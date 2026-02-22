@@ -95,8 +95,8 @@ export default async function BlogListPage() {
       )}
 
       <p className="mt-12 text-sm text-gray-500">
-        <Link href="/intro" className="text-blue-600 hover:underline">
-          ← 소개로 돌아가기
+        <Link href="/classes" className="text-blue-600 hover:underline">
+          ← 수업으로 들어가기
         </Link>
       </p>
     </section>
