@@ -152,7 +152,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#111] mb-2">
           {post.title}
         </h1>
-        <p className="text-sm text-gray-500">{formatDate(post.published_at ?? post.created_at)}</p>
+        <p className="text-sm text-gray-500">{formatDate(post.published_at || post.created_at)}</p>
       </header>
 
       <BlogContent html={sanitizeHtml(post.content)} />
