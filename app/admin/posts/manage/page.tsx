@@ -70,7 +70,7 @@ export default function AdminPostsManagePage() {
   async function openEditModal(post: Post) {
     const { data, error } = await supabase
       .from("posts")
-      .select("id, title, content, thumbnail_url, external_url")
+      .select("id, title, content, thumbnail_url, external_url, meta_title, meta_description, meta_keywords")
       .eq("id", post.id)
       .eq("category", "소식")
       .single();
@@ -86,6 +86,9 @@ export default function AdminPostsManagePage() {
       content: data.content,
       thumbnail_url: data.thumbnail_url,
       external_url: data.external_url,
+      meta_title: data.meta_title,
+      meta_description: data.meta_description,
+      meta_keywords: data.meta_keywords,
     });
     setIsModalOpen(true);
   }

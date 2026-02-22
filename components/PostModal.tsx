@@ -66,6 +66,9 @@ export type PostForEdit = {
   content: string;
   thumbnail_url: string | null;
   external_url: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  meta_keywords: string | null;
 };
 
 type Props = {
@@ -80,6 +83,9 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [externalUrl, setExternalUrl] = useState("");
   const [content, setContent] = useState("");
+  const [metaTitle, setMetaTitle] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
+  const [metaKeywords, setMetaKeywords] = useState("");
   const [saving, setSaving] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
   const [sourceMode, setSourceMode] = useState(false);
@@ -96,6 +102,9 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setContent(editingPost.content);
       setExternalUrl(editingPost.external_url || "");
       setThumbnailPreview(editingPost.thumbnail_url);
+      setMetaTitle(editingPost.meta_title || "");
+      setMetaDescription(editingPost.meta_description || "");
+      setMetaKeywords(editingPost.meta_keywords || "");
     } else {
       setTitle("");
       setContent("");
@@ -103,6 +112,9 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setThumbnailFile(null);
       setThumbnailPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      setMetaTitle("");
+      setMetaDescription("");
+      setMetaKeywords("");
     }
   }, [editingPost]);
 
@@ -254,6 +266,9 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
         thumbnail_url: thumbnailUrl,
         external_url: externalUrl.trim() || null,
         author_id: user?.id ?? null,
+        meta_title: metaTitle.trim() || null,
+        meta_description: metaDescription.trim() || null,
+        meta_keywords: metaKeywords.trim() || null,
       };
 
       if (isEdit && editingPost) {
@@ -349,6 +364,53 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
               />
               <p className="text-xs text-gray-500 mt-1">언론보도인 경우 기사 링크를 입력하세요.</p>
             </div>
+
+            <details className="border border-gray-200 rounded-lg">
+              <summary className="px-4 py-3 text-sm font-medium text-gray-700 cursor-pointer select-none hover:bg-gray-50 rounded-lg">
+                SEO 설정 (선택)
+              </summary>
+              <div className="px-4 pb-4 pt-2 space-y-3 border-t border-gray-100">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Meta Title
+                    <span className="ml-1 text-xs font-normal text-gray-400">비우면 게시글 제목을 사용합니다</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={metaTitle}
+                    onChange={(e) => setMetaTitle(e.target.value)}
+                    maxLength={100}
+                    placeholder="검색결과에 표시될 제목 (권장 60자 이내)"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Meta Description
+                    <span className="ml-1 text-xs font-normal text-gray-400">비우면 본문 앞부분을 사용합니다</span>
+                  </label>
+                  <textarea
+                    value={metaDescription}
+                    onChange={(e) => setMetaDescription(e.target.value)}
+                    rows={2}
+                    maxLength={300}
+                    placeholder="검색결과에 표시될 설명 (권장 150자 이내)"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
+                  <input
+                    type="text"
+                    value={metaKeywords}
+                    onChange={(e) => setMetaKeywords(e.target.value)}
+                    maxLength={200}
+                    placeholder="키워드1, 키워드2, 키워드3"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </details>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">내용 *</label>

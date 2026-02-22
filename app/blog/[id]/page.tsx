@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = createClientForBuild();
   const { data } = await supabase
     .from("posts")
-    .select("title, content, thumbnail_url")
+    .select("title, content, thumbnail_url, meta_title, meta_description, meta_keywords")
     .eq("id", id)
     .eq("category", "소식")
     .single();
@@ -44,17 +44,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "국악원 소식 | 김포국악원" };
   }
 
-  const description = stripHtml(data.content).slice(0, 150);
-  const title = `${data.title} | 김포국악원 소식`;
+  const fallbackDescription = stripHtml(data.content).slice(0, 150);
+  const title = data.meta_title?.trim() || `${data.title} | 김포국악원 소식`;
+  const description = data.meta_description?.trim() || fallbackDescription || "김포국악원의 소식과 블로그를 확인하세요.";
   const url = `${siteUrl}/blog/${id}`;
   const image = data.thumbnail_url || `${siteUrl}/logo.png`;
 
   return {
     title,
-    description: description || "김포국악원의 소식과 블로그를 확인하세요.",
+    description,
+    keywords: data.meta_keywords?.trim() || undefined,
     openGraph: {
       title,
-      description: description || "김포국악원의 소식과 블로그를 확인하세요.",
+      description,
       url,
       siteName: "김포국악원",
       locale: "ko_KR",
