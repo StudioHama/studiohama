@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeHtml } from "@/lib/html-utils";
 import { uploadBlogImage } from "@/lib/upload-image";
+import { toDatetimeLocalKST, parseDatetimeLocalAsKST } from "@/lib/date-utils";
 
 // ⚠️ react-quill-new / quill are NOT statically imported here.
 // All Quill module loading and format registration happens inside the
@@ -105,17 +106,6 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
 
   const isEdit = !!editingPost;
 
-  const toDatetimeLocal = (iso: string | null) => {
-    if (!iso) return "";
-    const d = new Date(iso);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const h = String(d.getHours()).padStart(2, "0");
-    const min = String(d.getMinutes()).padStart(2, "0");
-    return `${y}-${m}-${day}T${h}:${min}`;
-  };
-
   useEffect(() => {
     if (editingPost) {
       setTitle(editingPost.title);
@@ -125,7 +115,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setMetaTitle(editingPost.meta_title || "");
       setMetaDescription(editingPost.meta_description || "");
       setMetaKeywords(editingPost.meta_keywords || "");
-      setPublishedAt(toDatetimeLocal(editingPost.published_at));
+      setPublishedAt(toDatetimeLocalKST(editingPost.published_at));
     } else {
       setTitle("");
       setContent("");
@@ -136,7 +126,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setMetaTitle("");
       setMetaDescription("");
       setMetaKeywords("");
-      setPublishedAt(toDatetimeLocal(new Date().toISOString()));
+      setPublishedAt(toDatetimeLocalKST(new Date().toISOString()));
     }
   }, [editingPost]);
 
@@ -310,9 +300,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       }
 
       const { data: { user } } = await supabase.auth.getUser();
-      const publishedAtValue = publishedAt.trim()
-        ? new Date(publishedAt).toISOString()
-        : new Date().toISOString();
+      const publishedAtValue = parseDatetimeLocalAsKST(publishedAt);
       const payload = {
         title: title.trim(),
         content: sanitizeHtml(content.trim()),

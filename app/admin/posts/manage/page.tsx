@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { deletePostStorageFiles } from "@/lib/storage-cleanup";
 import PostModal, { type PostForEdit } from "@/components/PostModal";
+import { formatDateKST } from "@/lib/date-utils";
 
 type Post = {
   id: string;
@@ -136,11 +137,6 @@ export default function AdminPostsManagePage() {
     }
   }
 
-  function formatDate(dateStr: string) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" });
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -214,7 +210,7 @@ export default function AdminPostsManagePage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-600">{post.category}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatDate(post.created_at)}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatDateKST(post.created_at, "long")}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-2">
                         <button

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { formatDateKST } from "@/lib/date-utils";
 
 export const dynamic = "force-static";
 export const revalidate = 60;
@@ -9,14 +10,6 @@ export const metadata: Metadata = {
   title: "국악원 소식 | 김포국악원 (Gimpo Gugak Center)",
   description: "김포국악원의 소식을 확인하세요.",
 };
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  const y = String(d.getFullYear()).slice(-2);
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}.${m}.${day}`;
-}
 
 function BlogListItem({
   href,
@@ -93,7 +86,7 @@ export default async function BlogListPage() {
               <BlogListItem
                 href={post.external_url || `/blog/${post.id}`}
                 title={post.title}
-                date={formatDate(post.published_at || post.created_at)}
+                date={formatDateKST(post.published_at || post.created_at, "short")}
                 isExternal={!!post.external_url}
               />
             </li>

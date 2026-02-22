@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { createClientForBuild } from "@/lib/supabase/build";
 import { notFound } from "next/navigation";
 import { stripHtml, sanitizeHtml } from "@/lib/html-utils";
+import { formatDateKST } from "@/lib/date-utils";
 import "react-quill-new/dist/quill.snow.css";
 
 import ShareButtonLazy from "@/components/ShareButtonLazy";
@@ -66,14 +67,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [{ url: image, width: 800, height: 400, alt: data.title }],
     },
   };
-}
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}.${m}.${day}`;
 }
 
 function BlogContactSection() {
@@ -152,7 +145,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#111] mb-2">
           {post.title}
         </h1>
-        <p className="text-sm text-gray-500">{formatDate(post.published_at || post.created_at)}</p>
+        <p className="text-sm text-gray-500">{formatDateKST(post.published_at || post.created_at, "long")}</p>
       </header>
 
       <BlogContent html={sanitizeHtml(post.content)} />
