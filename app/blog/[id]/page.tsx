@@ -30,7 +30,7 @@ export async function generateStaticParams() {
 
 type Props = { params: Promise<{ id: string }> };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gimpo-gugak.kr";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gimpogugak.com";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;

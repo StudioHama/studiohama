@@ -40,7 +40,7 @@ const nanumMyeongjo = Nanum_Myeongjo({
   preload: false,
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gimpo-gugak.kr";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gimpogugak.com";
 
 export const viewport: Viewport = {
   width: "device-width",

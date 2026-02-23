@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description: "성악과 민요를 넘나드는 음악 교육자, 박준열입니다.",
   },
   alternates: {
-    canonical: "https://gimpo-gugak.kr/Park-Jun-Yeol",
+    canonical: "https://gimpogugak.com/Park-Jun-Yeol",
   },
 };
 
@@ -35,10 +35,10 @@ export default function ProfilePage() {
       name: "한양대학교 성악과",
     },
     knowsAbout: ["성악", "서도민요", "놀량사거리", "오페라"],
-    url: "https://gimpo-gugak.kr/Park-Jun-Yeol",
+    url: "https://gimpogugak.com/Park-Jun-Yeol",
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": "https://gimpo-gugak.kr/Park-Jun-Yeol",
+      "@id": "https://gimpogugak.com/Park-Jun-Yeol",
     },
     sameAs: [COLUMN_URL],
   };

@@ -209,7 +209,7 @@ export default function LoginPage() {
       });
 
       // Generate a unique email if not provided
-      const signupEmail = trimmedEmail || `${trimmedPhone.replace(/[^0-9]/g, "")}@gimpo-gugak.kr`;
+      const signupEmail = trimmedEmail || `${trimmedPhone.replace(/[^0-9]/g, "")}@gimpogugak.com`;
 
       // Step 1: Sign up user with Auth using 4-digit PIN
       const { data: authData, error: authError } = await supabase.auth.signUp({
