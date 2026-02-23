@@ -9,6 +9,26 @@ export function getTodayKST(): string {
 }
 
 /**
+ * Format an ISO datetime string for compact display in KST (e.g. "26.02.25 14:00").
+ */
+export function formatDateTimeKST(dateStr: string): string {
+  const d = new Date(dateStr);
+  const formatter = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: KST,
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(d);
+  const get = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((p) => p.type === type)?.value ?? "00";
+  return `${get("year")}.${get("month")}.${get("day")} ${get("hour")}:${get("minute")}`;
+}
+
+/**
  * Format an ISO date string for display in KST.
  * @param dateStr - ISO 8601 date string (e.g. from Supabase)
  * @param format - "short" = YY.MM.DD, "long" = YYYY.MM.DD

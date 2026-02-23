@@ -17,6 +17,13 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
+    version: "1.66",
+    date: "2026-02-22",
+    changes: [
+      "관리자 소식 관리: 예약 배지에 발행 예정 일시 표시(예: 예약됨 26.02.25 14:00), SEO 설정에 Slug 입력 필드 추가",
+    ],
+  },
+  {
     version: "1.65",
     date: "2026-02-22",
     changes: [

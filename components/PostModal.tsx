@@ -77,6 +77,7 @@ export type PostForEdit = {
   meta_title: string | null;
   meta_description: string | null;
   meta_keywords: string | null;
+  slug: string | null;
   published_at: string | null;
 };
 
@@ -95,6 +96,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [metaKeywords, setMetaKeywords] = useState("");
+  const [slug, setSlug] = useState("");
   const [publishedAt, setPublishedAt] = useState("");
   const [saving, setSaving] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
@@ -116,6 +118,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setMetaTitle(editingPost.meta_title || "");
       setMetaDescription(editingPost.meta_description || "");
       setMetaKeywords(editingPost.meta_keywords || "");
+      setSlug(editingPost.slug || "");
       setPublishedAt(toDatetimeLocalKST(editingPost.published_at));
     } else {
       setTitle("");
@@ -127,6 +130,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setMetaTitle("");
       setMetaDescription("");
       setMetaKeywords("");
+      setSlug("");
       setPublishedAt(toDatetimeLocalKST(new Date().toISOString()));
     }
   }, [editingPost]);
@@ -357,6 +361,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
         meta_title: metaTitle.trim() || null,
         meta_description: metaDescription.trim() || null,
         meta_keywords: metaKeywords.trim() || null,
+        slug: slug.trim() || null,
         published_at: publishedAtValue,
       };
 
@@ -506,6 +511,20 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
                     onChange={(e) => setMetaKeywords(e.target.value)}
                     maxLength={200}
                     placeholder="키워드1, 키워드2, 키워드3"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Slug
+                    <span className="ml-1 text-xs font-normal text-gray-400">SEO 친화적 URL 경로 (예: minyo-bawoogi)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    maxLength={200}
+                    placeholder="minyo-bawoogi"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>

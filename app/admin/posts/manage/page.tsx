@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { deletePostStorageFiles } from "@/lib/storage-cleanup";
 import PostModal, { type PostForEdit } from "@/components/PostModal";
-import { formatDateKST } from "@/lib/date-utils";
+import { formatDateKST, formatDateTimeKST } from "@/lib/date-utils";
 
 type Post = {
   id: string;
@@ -86,7 +86,7 @@ export default function AdminPostsManagePage() {
   async function openEditModal(post: Post) {
     const { data, error } = await supabase
       .from("posts")
-      .select("id, title, content, thumbnail_url, external_url, meta_title, meta_description, meta_keywords, published_at")
+      .select("id, title, content, thumbnail_url, external_url, meta_title, meta_description, meta_keywords, slug, published_at")
       .eq("id", post.id)
       .eq("category", "소식")
       .single();
@@ -105,6 +105,7 @@ export default function AdminPostsManagePage() {
       meta_title: data.meta_title,
       meta_description: data.meta_description,
       meta_keywords: data.meta_keywords,
+      slug: data.slug ?? null,
       published_at: data.published_at ?? null,
     });
     setIsModalOpen(true);
@@ -286,9 +287,9 @@ export default function AdminPostsManagePage() {
                             >
                               {post.title}
                             </Link>
-                            {isScheduled && (
+                            {isScheduled && post.published_at && (
                               <span className="shrink-0 px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 rounded">
-                                예약됨 (Scheduled)
+                                예약됨 ({formatDateTimeKST(post.published_at)})
                               </span>
                             )}
                           </div>
