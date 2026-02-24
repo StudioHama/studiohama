@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.72",
+    date: "2026-02-24",
+    changes: [
+      "관리자 기기 Google Analytics 추적 제외: 로그인 성공 시 localStorage에 'is_admin_device' 플래그 저장, GoogleAnalyticsWrapper 컴포넌트가 해당 기기에서는 GA 스크립트를 렌더링하지 않아 관리자 방문이 통계에서 영구 제외됨",
+    ],
+  },
+  {
     version: "1.71",
     date: "2026-02-24",
     changes: [

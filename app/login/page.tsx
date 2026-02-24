@@ -139,6 +139,7 @@ export default function LoginPage() {
           .single();
 
         if (profile?.role === "admin") {
+          localStorage.setItem("is_admin_device", "true");
           router.push("/admin");
         } else if (profile?.status === "pending") {
           router.push("/waiting");
