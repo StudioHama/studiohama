@@ -7,6 +7,8 @@ const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
 export default function ViewTracker({ postId }: { postId: string }) {
   useEffect(() => {
+    if (localStorage.getItem("is_admin_device") === "true") return;
+
     const key = `blog_view_${postId}`;
     const stored = localStorage.getItem(key);
     const now = Date.now();

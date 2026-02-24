@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.73",
+    date: "2026-02-24",
+    changes: [
+      "블로그 조회수 관리자 기기 제외: localStorage 'is_admin_device' 플래그가 설정된 기기에서는 ViewTracker가 조회수를 증가시키지 않아 관리자 방문이 통계에 포함되지 않음",
+    ],
+  },
+  {
     version: "1.72",
     date: "2026-02-24",
     changes: [
