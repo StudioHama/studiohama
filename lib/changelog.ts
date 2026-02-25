@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.77",
+    date: "2026-02-25",
+    changes: [
+      "수업 기록 오류 디버깅 강화: handleConfirmLessonByDate의 lesson_history insert 실패 시 Supabase 에러 객체를 console.error로 상세 출력하도록 개선 (RLS 또는 스키마 문제 즉시 식별 가능)",
+    ],
+  },
+  {
     version: "1.76",
     date: "2026-02-25",
     changes: [

@@ -799,13 +799,16 @@ export default function AdminLessonsPage() {
           status: "출석",
         });
 
-      if (historyError) throw historyError;
+      if (historyError) {
+        console.error("Supabase Insert Error:", historyError);
+        throw historyError;
+      }
 
       await Promise.all([loadLessons(), loadLessonHistory(), loadAllLessonHistory()]);
       closeAddLessonByDateModal();
       alert(`✅ ${lesson.student_name}님의 수업이 ${selectedDateForAdd}로 기록되었습니다.`);
     } catch (error: any) {
-      console.error("Add lesson by date error:", error);
+      console.error("Supabase Insert Error:", error);
       alert("수업 기록 중 오류가 발생했습니다.");
     }
   }
