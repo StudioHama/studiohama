@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.79",
+    date: "2026-02-25",
+    changes: [
+      "내 수업 최근 수강 내역 페이지네이션 추가: 페이지당 10개 항목 표시, 이전/다음 버튼 및 페이지 번호 네비게이션으로 기록이 많아도 UI가 무한 늘어나지 않도록 개선",
+    ],
+  },
+  {
     version: "1.78",
     date: "2026-02-25",
     changes: [

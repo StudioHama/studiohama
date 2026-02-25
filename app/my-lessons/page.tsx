@@ -22,11 +22,14 @@ type LessonHistory = {
   status: string | null;
 };
 
+const ITEMS_PER_PAGE = 10;
+
 export default function MyLessonsPage() {
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState<string>("회원");
   const [lessonData, setLessonData] = useState<LessonData | null>(null);
   const [history, setHistory] = useState<LessonHistory[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const supabase = createClient();
 
@@ -156,6 +159,12 @@ export default function MyLessonsPage() {
     );
   }
 
+  const totalPages = Math.ceil(history.length / ITEMS_PER_PAGE);
+  const currentHistory = history.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   const remaining = 4 - lessonData.current_session;
   const needsRenewal = lessonData.current_session === 4;
   const progressPercent = (lessonData.current_session / 4) * 100;
@@ -266,7 +275,7 @@ export default function MyLessonsPage() {
               {/* Timeline line */}
               <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-100" />
               <div className="space-y-3">
-                {history.slice(0, 8).map((record) => {
+                {currentHistory.map((record) => {
                   const status = record.status ?? "출석";
                   const statusStyles: Record<string, string> = {
                     "출석": "bg-green-100 text-green-700",
@@ -309,12 +318,40 @@ export default function MyLessonsPage() {
                     </div>
                   );
                 })}
-                {history.length > 8 && (
-                  <p className="text-xs text-gray-400 text-center pt-1">
-                    최근 8회 표시 중 · 총 {history.length}회 기록
-                  </p>
-                )}
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-5">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    이전
+                  </button>
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${
+                        currentPage === i + 1
+                          ? "bg-blue-600 text-white shadow"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    다음
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
