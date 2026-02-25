@@ -15,9 +15,10 @@ type LessonData = {
 };
 
 type LessonHistory = {
+  id: string;
+  lesson_id: string;
   session_number: number;
   completed_date: string;
-  note: string | null;
   status: string | null;
 };
 
@@ -91,11 +92,15 @@ export default function MyLessonsPage() {
       if (lesson) {
         const { data: historyData, error: historyError } = await supabase
           .from("lesson_history")
-          .select("session_number, completed_date, note, status")
+          .select("id, lesson_id, session_number, completed_date, status")
           .eq("lesson_id", lesson.id)
           .order("completed_date", { ascending: false });
 
-        if (!historyError) {
+        console.log("Fetched Lesson History Data:", historyData, "Error:", historyError);
+
+        if (historyError) {
+          console.error("Lesson history fetch error:", historyError);
+        } else {
           setHistory(historyData || []);
         }
       }
@@ -279,7 +284,7 @@ export default function MyLessonsPage() {
                   const dotCls = dotStyles[status] ?? "bg-gray-400";
 
                   return (
-                    <div key={`${record.session_number}-${record.completed_date}`} className="flex items-start gap-4 relative">
+                    <div key={record.id} className="flex items-start gap-4 relative">
                       {/* Timeline dot */}
                       <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm flex-shrink-0 ${dotCls}`}>
                         {record.session_number}
@@ -296,9 +301,6 @@ export default function MyLessonsPage() {
                               day: "numeric",
                             })}
                           </p>
-                          {record.note && (
-                            <p className="text-xs text-gray-400 mt-1 italic">{record.note}</p>
-                          )}
                         </div>
                         <span className={`px-3 py-1 rounded-full text-xs font-bold flex-shrink-0 ${badgeCls}`}>
                           {status}

@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.78",
+    date: "2026-02-25",
+    changes: [
+      "내 수업 최근 수강 내역 빈 목록 버그 수정: lesson_history 조회 쿼리에서 존재하지 않는 note 컬럼을 제거하고 실제 DB 스키마(id, lesson_id, session_number, completed_date, status)에 맞게 수정. 쿼리 실패 시 에러를 무시하던 로직을 수정하여 console.error로 명시 출력하고, JSX에서 note 참조 제거 및 record.id를 map key로 사용.",
+    ],
+  },
+  {
     version: "1.77",
     date: "2026-02-25",
     changes: [
