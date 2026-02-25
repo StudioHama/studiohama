@@ -45,6 +45,8 @@ const COLUMN_ITEMS: { url: string; title: string; date: string }[] = [
   { url: `${BASE_URL}?idxno=91302`, title: "박준열의 교육 칼럼 8편", date: "25.12.31" },
   { url: `${BASE_URL}?idxno=91499`, title: "박준열의 교육 칼럼 9편", date: "26.01.14" },
   { url: `${BASE_URL}?idxno=91717`, title: "박준열의 교육 칼럼 10편", date: "26.02.04" },
+  { url: `${BASE_URL}?idxno=91910`, title: "박준열의 교육 칼럼 11편", date: "26.02.25" }
+
 ];
 
 function DotLeaderItem({
