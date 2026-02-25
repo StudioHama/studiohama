@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.85",
+    date: "2026-02-25",
+    changes: [
+      "블로그 조회수 증가 버그 수정: Supabase DB 컬럼명이 view_count가 아닌 views임을 확인, ViewTracker 컴포넌트의 select/update 쿼리가 views 컬럼을 정확히 참조하도록 검증 완료",
+    ],
+  },
+  {
     version: "1.84",
     date: "2026-02-25",
     changes: [
