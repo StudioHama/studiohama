@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.80",
+    date: "2026-02-25",
+    changes: [
+      "수업 관리 캘린더-목록 데이터 동기화 버그 수정: (1) 수업 갱신 시 lesson_history 이전 기록 삭제로 캘린더 잔존 데이터 제거, (2) 캘린더 삭제 버튼이 임의 회차 삭제 시 current_session을 blind decrement 대신 lesson_history 실제 잔여 건수로 재동기화, (3) 수업 취소(↩️) 버튼이 session_number 일치 탐색 대신 최신 레코드 ID로 삭제하여 번호 공백 문제 해결, (4) 날짜별 수업 추가 모달이 stale 상태값 대신 DB에서 최신 current_session을 재조회하여 중복 삽입 방지, (5) 목록 진도 날짜 표시를 slice 기반 추정에서 lesson_history 직접 렌더링으로 교체하여 캘린더와 항상 동일한 데이터 표시",
+    ],
+  },
+  {
     version: "1.79",
     date: "2026-02-25",
     changes: [

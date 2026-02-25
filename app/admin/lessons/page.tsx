@@ -397,9 +397,6 @@ export default function AdminLessonsPage() {
       return;
     }
     try {
-      const lesson = lessons.find((l) => l.id === lessonId);
-      if (!lesson) return;
-
       const { error: deleteError } = await supabase
         .from("lesson_history")
         .delete()
@@ -407,10 +404,18 @@ export default function AdminLessonsPage() {
 
       if (deleteError) throw deleteError;
 
-      const newSession = Math.max(0, lesson.current_session - 1);
+      // Re-count actual remaining records so current_session always matches lesson_history
+      const { count, error: countError } = await supabase
+        .from("lesson_history")
+        .select("*", { count: "exact", head: true })
+        .eq("lesson_id", lessonId);
+
+      if (countError) throw countError;
+
+      const syncedSession = count ?? 0;
       const { error } = await supabase
         .from("lessons")
-        .update({ current_session: newSession })
+        .update({ current_session: syncedSession })
         .eq("id", lessonId);
 
       if (error) throw error;
@@ -437,33 +442,46 @@ export default function AdminLessonsPage() {
         return;
       }
 
-      const sessionToRemove = lesson.current_session;
-
-      // Step 1: Delete the most recent attendance record from lesson_history FIRST
-      const { error: deleteError } = await supabase
+      // Step 1: Find the actual latest record by session_number DESC (robust to gaps)
+      const { data: latestRecord, error: fetchError } = await supabase
         .from("lesson_history")
-        .delete()
+        .select("id, session_number")
         .eq("lesson_id", lessonId)
-        .eq("session_number", sessionToRemove);
+        .order("session_number", { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
-      if (deleteError) {
-        console.error("Lesson history delete error:", deleteError);
-        throw deleteError;
+      if (fetchError) throw fetchError;
+
+      if (latestRecord) {
+        const { error: deleteError } = await supabase
+          .from("lesson_history")
+          .delete()
+          .eq("id", latestRecord.id);
+
+        if (deleteError) throw deleteError;
       }
 
-      // Step 2: Decrement session count in lessons
-      const newSession = sessionToRemove - 1;
+      // Step 2: Re-count remaining records so current_session always matches lesson_history
+      const { count, error: countError } = await supabase
+        .from("lesson_history")
+        .select("*", { count: "exact", head: true })
+        .eq("lesson_id", lessonId);
+
+      if (countError) throw countError;
+
+      const syncedSession = count ?? 0;
       const { error } = await supabase
         .from("lessons")
-        .update({ current_session: newSession })
+        .update({ current_session: syncedSession })
         .eq("id", lessonId);
 
       if (error) throw error;
 
       await Promise.all([loadLessons(), loadLessonHistory(), loadAllLessonHistory()]);
-      const remainingSessions = selectedDateLessons.filter(
-        (s) => !(s.lesson_id === lessonId && s.session_number === sessionToRemove)
-      );
+      const remainingSessions = latestRecord
+        ? selectedDateLessons.filter((s) => s.id !== latestRecord.id)
+        : selectedDateLessons;
       setSelectedDateLessons(remainingSessions);
       if (remainingSessions.length === 0) closeDetailModal();
       alert("✅ 마지막 수업이 취소되었습니다.");
@@ -714,11 +732,19 @@ export default function AdminLessonsPage() {
     : unassignedUsers;
 
   async function handleRenewLesson(lessonId: string) {
-    if (!confirm("수업을 갱신하시겠습니까? (진도가 0으로 초기화됩니다)")) {
+    if (!confirm("수업을 갱신하시겠습니까? (진도와 출석 기록이 초기화됩니다)")) {
       return;
     }
 
     try {
+      // Clear lesson_history first so calendar never shows stale pre-renewal records
+      const { error: deleteError } = await supabase
+        .from("lesson_history")
+        .delete()
+        .eq("lesson_id", lessonId);
+
+      if (deleteError) throw deleteError;
+
       const { error } = await supabase
         .from("lessons")
         .update({
@@ -728,7 +754,7 @@ export default function AdminLessonsPage() {
         .eq("id", lessonId);
 
       if (error) throw error;
-      await loadLessons();
+      await Promise.all([loadLessons(), loadLessonHistory(), loadAllLessonHistory()]);
       alert("✅ 수업이 갱신되었습니다.");
     } catch (error) {
       console.error("Renew error:", error);
@@ -773,29 +799,42 @@ export default function AdminLessonsPage() {
       return;
     }
 
-    const lesson = selectedLessonForAdd;
-    if (lesson.current_session >= 4) {
-      alert("이미 4회차가 완료된 수강생입니다. 수강료 갱신 후 진행해주세요.");
-      return;
-    }
+    const lessonId = selectedLessonForAdd.id;
+    const userId = selectedLessonForAdd.user_id;
+    const studentName = selectedLessonForAdd.student_name;
 
     try {
-      const newSession = lesson.current_session + 1;
+      // Re-fetch current_session from DB to avoid stale modal state
+      const { data: freshLesson, error: fetchError } = await supabase
+        .from("lessons")
+        .select("current_session")
+        .eq("id", lessonId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      const freshSession = freshLesson.current_session ?? 0;
+      if (freshSession >= 4) {
+        alert("이미 4회차가 완료된 수강생입니다. 수강료 갱신 후 진행해주세요.");
+        return;
+      }
+
+      const newSession = freshSession + 1;
 
       const { error } = await supabase
         .from("lessons")
         .update({ current_session: newSession })
-        .eq("id", lesson.id);
+        .eq("id", lessonId);
 
       if (error) throw error;
 
       const { error: historyError } = await supabase
         .from("lesson_history")
         .insert({
-          lesson_id: lesson.id,
+          lesson_id: lessonId,
           session_number: newSession,
           completed_date: selectedDateForAdd,
-          user_id: lesson.user_id,
+          user_id: userId,
           status: "출석",
         });
 
@@ -806,7 +845,7 @@ export default function AdminLessonsPage() {
 
       await Promise.all([loadLessons(), loadLessonHistory(), loadAllLessonHistory()]);
       closeAddLessonByDateModal();
-      alert(`✅ ${lesson.student_name}님의 수업이 ${selectedDateForAdd}로 기록되었습니다.`);
+      alert(`✅ ${studentName}님의 수업이 ${selectedDateForAdd}로 기록되었습니다.`);
     } catch (error: any) {
       console.error("Supabase Insert Error:", error);
       alert("수업 기록 중 오류가 발생했습니다.");
@@ -1191,27 +1230,20 @@ export default function AdminLessonsPage() {
                                 <span className="text-xs text-gray-500">({remaining}회 남음)</span>
                               )}
                             </div>
-                            {(() => {
-                              const lessonRecords = allLessonHistory
-                                .filter(h => h.lesson_id === lesson.id)
-                                .sort((a, b) => a.completed_date.localeCompare(b.completed_date));
-                              const currentPeriodRecords = lesson.current_session > 0
-                                ? lessonRecords.slice(-lesson.current_session)
-                                : [];
-                              return currentPeriodRecords
-                                .sort((a, b) => a.session_number - b.session_number)
-                                .map(h => {
-                                  const [yr, mo, dy] = h.completed_date.split('-');
-                                  const d = new Date(parseInt(yr), parseInt(mo) - 1, parseInt(dy));
-                                  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-                                  const dayName = dayNames[d.getDay()];
-                                  return (
-                                    <span key={h.id} className="text-xs text-gray-400 whitespace-nowrap">
-                                      {h.session_number}회: {yr.slice(-2)}.{mo}.{dy}({dayName})
-                                    </span>
-                                  );
-                                });
-                            })()}
+                            {allLessonHistory
+                              .filter(h => h.lesson_id === lesson.id)
+                              .sort((a, b) => a.session_number - b.session_number)
+                              .map(h => {
+                                const [yr, mo, dy] = h.completed_date.split('-');
+                                const d = new Date(parseInt(yr), parseInt(mo) - 1, parseInt(dy));
+                                const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                                const dayName = dayNames[d.getDay()];
+                                return (
+                                  <span key={h.id} className="text-xs text-gray-400 whitespace-nowrap">
+                                    {h.session_number}회: {yr.slice(-2)}.{mo}.{dy}({dayName})
+                                  </span>
+                                );
+                              })}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -1413,27 +1445,20 @@ export default function AdminLessonsPage() {
                         }`}>
                           {lesson.current_session}/4
                         </span>
-                        {(() => {
-                          const lessonRecords = allLessonHistory
-                            .filter(h => h.lesson_id === lesson.id)
-                            .sort((a, b) => a.completed_date.localeCompare(b.completed_date));
-                          const currentPeriodRecords = lesson.current_session > 0
-                            ? lessonRecords.slice(-lesson.current_session)
-                            : [];
-                          return currentPeriodRecords
-                            .sort((a, b) => a.session_number - b.session_number)
-                            .map(h => {
-                              const [yr, mo, dy] = h.completed_date.split('-');
-                              const d = new Date(parseInt(yr), parseInt(mo) - 1, parseInt(dy));
-                              const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-                              const dayName = dayNames[d.getDay()];
-                              return (
-                                <div key={h.id} className="text-xs text-gray-400 text-right">
-                                  {h.session_number}회: {yr.slice(-2)}.{mo}.{dy}({dayName})
-                                </div>
-                              );
-                            });
-                        })()}
+                        {allLessonHistory
+                          .filter(h => h.lesson_id === lesson.id)
+                          .sort((a, b) => a.session_number - b.session_number)
+                          .map(h => {
+                            const [yr, mo, dy] = h.completed_date.split('-');
+                            const d = new Date(parseInt(yr), parseInt(mo) - 1, parseInt(dy));
+                            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                            const dayName = dayNames[d.getDay()];
+                            return (
+                              <div key={h.id} className="text-xs text-gray-400 text-right">
+                                {h.session_number}회: {yr.slice(-2)}.{mo}.{dy}({dayName})
+                              </div>
+                            );
+                          })}
                       </div>
                     </div>
 
