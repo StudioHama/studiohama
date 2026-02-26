@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.91",
+    date: "2026-02-26",
+    changes: [
+      "블로그 이전글/다음글 네비게이션 카테고리 격리 및 예약글 방어: '음악교실' 글에서는 같은 '음악교실' 글로만, '국악원소식' 글에서는 같은 '국악원소식' 계열 글로만 이동하도록 카테고리 필터 추가. published_at <= now() 조건으로 예약(미래) 발행 글이 네비게이션에 노출되지 않도록 강화.",
+    ],
+  },
+  {
     version: "1.90",
     date: "2026-02-26",
     changes: [

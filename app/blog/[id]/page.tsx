@@ -160,11 +160,17 @@ export default async function BlogDetailPage({ params }: Props) {
   const postDate = post.published_at || post.created_at;
   const now = new Date().toISOString();
 
+  // Category isolation: "음악교실" navigates within "음악교실" only;
+  // "소식"/"국악원소식" (legacy alias) navigate within the same group.
+  const navCategories = post.category === "음악교실"
+    ? ["음악교실"]
+    : ["소식", "국악원소식"];
+
   const [{ data: prevPosts }, { data: nextPosts }] = await Promise.all([
     supabase
       .from("posts")
       .select("id, title, slug")
-      .in("category", ["소식", "음악교실", "국악원소식"])
+      .in("category", navCategories)
       .lte("published_at", now)
       .lt("published_at", postDate)
       .order("published_at", { ascending: false })
@@ -172,7 +178,7 @@ export default async function BlogDetailPage({ params }: Props) {
     supabase
       .from("posts")
       .select("id, title, slug")
-      .in("category", ["소식", "음악교실", "국악원소식"])
+      .in("category", navCategories)
       .lte("published_at", now)
       .gt("published_at", postDate)
       .order("published_at", { ascending: true })
