@@ -157,16 +157,16 @@ export default function PrivacyPage() {
             </h2>
             <div className="bg-ink/5 rounded-lg px-5 py-4 text-sm text-ink/75 space-y-1.5">
               <p><span className="font-semibold text-ink/90">기관명:</span> 김포국악원</p>
-              <p><span className="font-semibold text-ink/90">책임자:</span> 원장</p>
+              <p><span className="font-semibold text-ink/90">책임자:</span> 송영옥 원장</p>
               <p>
                 <span className="font-semibold text-ink/90">연락처:</span>{" "}
                 <a href="tel:0316280909" className="underline hover:text-ink">
-                  031-628-0909
+                  010-5948-1843
                 </a>
               </p>
               <p>
                 <span className="font-semibold text-ink/90">주소:</span>{" "}
-                경기도 김포시
+                경기도 김포시 모담공원로 170-14
               </p>
             </div>
             <p className="mt-3 text-xs text-ink/50">

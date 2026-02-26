@@ -5,8 +5,12 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const BLOG_CATEGORIES = ["음악교실", "국악원소식"] as const;
+type BlogCategory = (typeof BLOG_CATEGORIES)[number];
+
 export default function AdminPostsWritePage() {
   const [title, setTitle] = useState("");
+  const [postCategory, setPostCategory] = useState<BlogCategory>("국악원소식");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const router = useRouter();
@@ -29,8 +33,8 @@ export default function AdminPostsWritePage() {
       const { error } = await supabase.from("posts").insert({
         title: title.trim(),
         content: content.trim(),
-        category: "소식",
-        tag: "소식",
+        category: postCategory,
+        tag: postCategory,
         author_id: user?.id ?? null,
       });
 
@@ -67,6 +71,29 @@ export default function AdminPostsWritePage() {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="제목을 입력하세요"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">카테고리</label>
+          <div className="flex gap-4">
+            {BLOG_CATEGORIES.map((cat) => (
+              <label key={cat} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="postCategory"
+                  value={cat}
+                  checked={postCategory === cat}
+                  onChange={() => setPostCategory(cat)}
+                  className="text-blue-600"
+                />
+                <span className={`text-sm font-medium px-2 py-0.5 rounded ${
+                  cat === "음악교실" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"
+                }`}>
+                  {cat}
+                </span>
+              </label>
+            ))}
+          </div>
         </div>
 
         <div>

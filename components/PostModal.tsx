@@ -22,7 +22,8 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 
 const BUCKET = "public-media"; // 썸네일용; 본문 이미지는 lib/upload-image 사용
-const DEFAULT_CATEGORY = "소식";
+const BLOG_CATEGORIES = ["음악교실", "국악원소식"] as const;
+type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
 type QuillEditor = {
   getSelection: (x: boolean) => { index: number; length: number } | null;
@@ -72,6 +73,7 @@ export type PostForEdit = {
   id: string;
   title: string;
   content: string;
+  category: string;
   thumbnail_url: string | null;
   external_url: string | null;
   meta_title: string | null;
@@ -89,6 +91,7 @@ type Props = {
 
 export default function PostModal({ editingPost, onClose, onSaved }: Props) {
   const [title, setTitle] = useState("");
+  const [postCategory, setPostCategory] = useState<BlogCategory>("국악원소식");
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [externalUrl, setExternalUrl] = useState("");
@@ -112,6 +115,11 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
   useEffect(() => {
     if (editingPost) {
       setTitle(editingPost.title);
+      setPostCategory(
+        BLOG_CATEGORIES.includes(editingPost.category as BlogCategory)
+          ? (editingPost.category as BlogCategory)
+          : "국악원소식"
+      );
       setContent(editingPost.content);
       setExternalUrl(editingPost.external_url || "");
       setThumbnailPreview(editingPost.thumbnail_url);
@@ -122,6 +130,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       setPublishedAt(toDatetimeLocalKST(editingPost.published_at));
     } else {
       setTitle("");
+      setPostCategory("국악원소식");
       setContent("");
       setExternalUrl("");
       setThumbnailFile(null);
@@ -353,8 +362,8 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
       const payload = {
         title: title.trim(),
         content: sanitizeHtml(content.trim()),
-        category: DEFAULT_CATEGORY,
-        tag: DEFAULT_CATEGORY,
+        category: postCategory,
+        tag: postCategory,
         thumbnail_url: thumbnailUrl,
         external_url: externalUrl.trim() || null,
         author_id: user?.id ?? null,
@@ -369,8 +378,7 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
         const { error } = await supabase
           .from("posts")
           .update(payload)
-          .eq("id", editingPost.id)
-          .eq("category", DEFAULT_CATEGORY);
+          .eq("id", editingPost.id);
 
         if (error) throw new Error(error.message);
         alert("✅ 게시글이 수정되었습니다.");
@@ -418,6 +426,31 @@ export default function PostModal({ editingPost, onClose, onSaved }: Props) {
                 placeholder="제목을 입력하세요"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">카테고리 *</label>
+              <div className="flex gap-4">
+                {BLOG_CATEGORIES.map((cat) => (
+                  <label key={cat} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="postCategory"
+                      value={cat}
+                      checked={postCategory === cat}
+                      onChange={() => setPostCategory(cat)}
+                      className="text-blue-600"
+                    />
+                    <span className={`text-sm font-medium px-2 py-0.5 rounded ${
+                      cat === "음악교실"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-green-100 text-green-700"
+                    }`}>
+                      {cat}
+                    </span>
+                  </label>
+                ))}
+              </div>
             </div>
 
             <div>

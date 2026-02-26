@@ -16,7 +16,7 @@ import ViewTracker from "@/components/ViewTracker";
 export const revalidate = 60;
 export const dynamicParams = true;
 
-const selectCols = "id, title, content, slug, created_at, published_at, thumbnail_url, meta_title, meta_description, meta_keywords";
+const selectCols = "id, title, content, slug, created_at, published_at, thumbnail_url, meta_title, meta_description, meta_keywords, category";
 
 async function fetchPostBySlugOrId(supabase: ReturnType<typeof createClientForBuild>, param: string) {
   const now = new Date().toISOString();
@@ -24,7 +24,7 @@ async function fetchPostBySlugOrId(supabase: ReturnType<typeof createClientForBu
   const { data: bySlug } = await supabase
     .from("posts")
     .select(selectCols)
-    .eq("category", "소식")
+    .in("category", ["소식", "음악교실", "국악원소식"])
     .eq("slug", param)
     .lte("published_at", now)
     .single();
@@ -33,7 +33,7 @@ async function fetchPostBySlugOrId(supabase: ReturnType<typeof createClientForBu
   const { data: byId } = await supabase
     .from("posts")
     .select(selectCols)
-    .eq("category", "소식")
+    .in("category", ["소식", "음악교실", "국악원소식"])
     .eq("id", param)
     .lte("published_at", now)
     .single();
@@ -46,7 +46,7 @@ export async function generateStaticParams() {
     const { data: posts } = await supabase
       .from("posts")
       .select("id, slug")
-      .eq("category", "소식")
+      .in("category", ["소식", "음악교실", "국악원소식"])
       .lte("published_at", new Date().toISOString());
     return (posts ?? []).map((post) => ({ id: getBlogPostPath(post.slug ?? null, String(post.id)) }));
   } catch {
@@ -164,7 +164,7 @@ export default async function BlogDetailPage({ params }: Props) {
     supabase
       .from("posts")
       .select("id, title, slug")
-      .eq("category", "소식")
+      .in("category", ["소식", "음악교실", "국악원소식"])
       .lte("published_at", now)
       .lt("published_at", postDate)
       .order("published_at", { ascending: false })
@@ -172,7 +172,7 @@ export default async function BlogDetailPage({ params }: Props) {
     supabase
       .from("posts")
       .select("id, title, slug")
-      .eq("category", "소식")
+      .in("category", ["소식", "음악교실", "국악원소식"])
       .lte("published_at", now)
       .gt("published_at", postDate)
       .order("published_at", { ascending: true })
@@ -186,6 +186,15 @@ export default async function BlogDetailPage({ params }: Props) {
     <article className="blog-detail-article mx-auto max-w-2xl px-6 py-12">
       <ViewTracker postId={String(post.id)} />
       <header className="mb-8">
+        <div className="mb-3">
+          <span className={`text-xs font-medium px-2 py-1 rounded ${
+            post.category === "음악교실"
+              ? "bg-blue-100 text-blue-700"
+              : "bg-green-100 text-green-700"
+          }`}>
+            {post.category === "음악교실" ? "음악교실" : "국악원소식"}
+          </span>
+        </div>
         <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#111] mb-2">
           {post.title}
         </h1>

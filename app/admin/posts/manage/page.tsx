@@ -75,7 +75,7 @@ export default function AdminPostsManagePage() {
       const { data, error } = await supabase
         .from("posts")
         .select("id, slug, title, content, category, created_at, published_at, views")
-        .eq("category", "소식")
+        .in("category", ["소식", "음악교실", "국악원소식"])
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -89,9 +89,8 @@ export default function AdminPostsManagePage() {
   async function openEditModal(post: Post) {
     const { data, error } = await supabase
       .from("posts")
-      .select("id, title, content, thumbnail_url, external_url, meta_title, meta_description, meta_keywords, slug, published_at")
+      .select("id, title, content, category, thumbnail_url, external_url, meta_title, meta_description, meta_keywords, slug, published_at")
       .eq("id", post.id)
-      .eq("category", "소식")
       .single();
 
     if (error || !data) {
@@ -103,6 +102,7 @@ export default function AdminPostsManagePage() {
       id: data.id,
       title: data.title,
       content: data.content,
+      category: data.category,
       thumbnail_url: data.thumbnail_url,
       external_url: data.external_url,
       meta_title: data.meta_title,
@@ -133,7 +133,6 @@ export default function AdminPostsManagePage() {
         .from("posts")
         .select("content, thumbnail_url")
         .eq("id", post.id)
-        .eq("category", "소식")
         .single();
 
       if (fullPost) {
@@ -143,8 +142,7 @@ export default function AdminPostsManagePage() {
       const { error } = await supabase
         .from("posts")
         .delete()
-        .eq("id", post.id)
-        .eq("category", "소식");
+        .eq("id", post.id);
 
       if (error) throw error;
       await loadPosts();
@@ -301,7 +299,15 @@ export default function AdminPostsManagePage() {
                             )}
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-gray-600">{post.category}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                            post.category === "음악교실"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-green-100 text-green-700"
+                          }`}>
+                            {post.category === "음악교실" ? "음악교실" : "국악원소식"}
+                          </span>
+                        </td>
                         <td className="px-4 py-3 text-gray-600">{formatDateKST(post.created_at, "long")}</td>
                         <td className="px-4 py-3 text-right text-gray-600">{post.views ?? 0}</td>
                         <td className="px-4 py-3 text-right">
