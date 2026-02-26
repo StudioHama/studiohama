@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.92",
+    date: "2026-02-26",
+    changes: [
+      "공개 블로그 목록 UX 개선: 상단 검색 바(돋보기 아이콘) 추가 — 제목 키워드 실시간 필터링 지원. 페이지네이션 도입(페이지당 10건, 이전/다음/번호 네비게이션). No. 열 추가 — 가장 오래된 글이 1번, 최신 글이 최고 번호를 갖는 역순 넘버링(totalPosts - ((page-1)×10 + index)). 게시글 앞 카테고리 배지 제거(탭 필터로 대체). 푸터 '개인정보처리방침' 링크 노출 확인.",
+    ],
+  },
+  {
     version: "1.91",
     date: "2026-02-26",
     changes: [
