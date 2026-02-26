@@ -266,6 +266,7 @@ export default function AdminPostsManagePage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="w-12 text-center px-4 py-3 font-semibold text-gray-700">No.</th>
                     <th className="text-left px-4 py-3 font-semibold text-gray-700">제목</th>
                     <th className="text-left px-4 py-3 font-semibold text-gray-700">카테고리</th>
                     <th className="text-left px-4 py-3 font-semibold text-gray-700">작성일</th>
@@ -274,13 +275,15 @@ export default function AdminPostsManagePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedPosts.map((post) => {
+                  {paginatedPosts.map((post, index) => {
                     const isScheduled = post.published_at && new Date(post.published_at) > new Date();
+                    const rowNumber = (safePage - 1) * itemsPerPage + index + 1;
                     return (
                       <tr
                         key={post.id}
                         className={`border-b border-gray-100 hover:bg-gray-50/50 ${isScheduled ? "opacity-50" : ""}`}
                       >
+                        <td className="w-12 px-4 py-3 text-center text-gray-500">{rowNumber}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
                             <Link

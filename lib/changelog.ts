@@ -10,6 +10,20 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.87",
+    date: "2026-02-26",
+    changes: [
+      "소식 관리 테이블에 No. 열 추가: 페이지네이션 연동으로 1페이지 1~10번, 2페이지 11~20번 등 페이지 간 번호가 연속되도록 계산 ((현재 페이지 - 1) × 페이지당 항목 수 + 순번)",
+    ],
+  },
+  {
+    version: "1.86",
+    date: "2026-02-25",
+    changes: [
+      "블로그 조회수 증가 근본 원인 수정: ViewTracker를 클라이언트 측 anon 키 직접 호출에서 서버 API 라우트(/api/track-view)로 전환. 서버 측에서 SUPABASE_SERVICE_ROLE_KEY를 사용해 RLS 제약 없이 UPDATE 실행. SELECT/UPDATE 실패 시 Vercel 함수 로그에 code/message/details/hint 상세 출력, 브라우저 콘솔에도 응답 오류 로깅 추가.",
+    ],
+  },
+  {
     version: "1.85",
     date: "2026-02-25",
     changes: [

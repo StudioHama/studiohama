@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
@@ -15,29 +14,31 @@ export default function ViewTracker({ postId }: { postId: string }) {
 
     if (stored) {
       const lastViewed = parseInt(stored, 10);
-      if (!isNaN(lastViewed) && now - lastViewed < TWENTY_FOUR_HOURS) {
-        return;
-      }
+      if (!isNaN(lastViewed) && now - lastViewed < TWENTY_FOUR_HOURS) return;
     }
 
     async function track() {
-      const supabase = createClient();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data } = await (supabase as any)
-        .from("posts")
-        .select("views")
-        .eq("id", postId)
-        .single();
+      try {
+        const res = await fetch("/api/track-view", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ postId }),
+        });
 
-      const currentViews = (data?.views ?? 0) as number;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
-        .from("posts")
-        .update({ views: currentViews + 1 })
-        .eq("id", postId);
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => ({}));
+          console.error(
+            "[ViewTracker] API returned error status=%d postId=%s body=%o",
+            res.status,
+            postId,
+            errBody
+          );
+          return;
+        }
 
-      if (!error) {
         localStorage.setItem(key, String(now));
+      } catch (err) {
+        console.error("[ViewTracker] Fetch to /api/track-view failed:", err);
       }
     }
 
