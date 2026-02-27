@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.09",
+    date: "2026-02-27",
+    changes: [
+      "캡션 적용 시 사진 삭제 버그 수정 및 지능형 에디터 잠금 해제 적용: ReadOnly 상태에서 Quill API/DOM 변경 시 인덱스 손상으로 이미지 노드가 삭제되는 치명적 버그 발견. applyCaption 함수에서 DOM 수정 직전 editor.enable(true)로 일시 활성화 후 작업 수행, 완료 후 툴팁 닫힘과 함께 자동 재잠금. 이미지 노드 존재 검증(contains) 추가로 안전성 강화. TROUBLESHOOTING.md에 v2.08 실패 사례 및 해결 전략 문서화.",
+    ],
+  },
+  {
     version: "2.08",
     date: "2026-02-27",
     changes: [

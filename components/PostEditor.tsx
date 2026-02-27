@@ -281,13 +281,24 @@ export default function PostEditor({ editingPost = null }: Props) {
   const applyCaption = useCallback(() => {
     const img = imageTooltip.imgEl;
     if (!img) return;
-    const editor = (quillRef.current as { getEditor?: () => QuillEditor & { root?: HTMLElement } })?.getEditor?.();
+    const editor = (quillRef.current as { getEditor?: () => QuillEditor & { root?: HTMLElement; enable?: (v: boolean) => void } })?.getEditor?.();
     if (!editor?.root) return;
+
+    // ★ v2.09 핵심: ReadOnly 상태에서 DOM 변경 시 Quill 인덱스 손상 방지
+    // 에디터를 일시적으로 활성화한 뒤 DOM 수정 → 콘텐츠 동기화 → 다시 잠금
+    editor.enable?.(true);
 
     const captionText = imageTooltip.caption.trim();
 
-    // Find the <p> wrapping the image
+    // Find the <p> wrapping the image — re-verify image still exists in DOM
     const anchor = img.closest("p") || img;
+    if (!editor.root.contains(anchor)) {
+      // Image node was lost; abort safely
+      editor.enable?.(false);
+      setImageTooltip((prev) => ({ ...prev, visible: false, imgEl: null }));
+      return;
+    }
+
     const next = anchor.nextElementSibling;
     const existingCaptionEl =
       next?.tagName === "P" && next.classList.contains("ql-image-caption")
@@ -312,7 +323,7 @@ export default function PostEditor({ editingPost = null }: Props) {
     setContent(editor.root.innerHTML);
     // Ensure editor doesn't reclaim focus after tooltip closes
     editor.blur?.();
-    // Close tooltip after applying
+    // Close tooltip — useEffect will handle editor.enable(true) since visible becomes false
     setImageTooltip((prev) => ({ ...prev, visible: false, imgEl: null }));
   }, [imageTooltip.imgEl, imageTooltip.caption]);
 

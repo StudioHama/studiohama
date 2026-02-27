@@ -84,6 +84,62 @@ Quill은 1번 또는 3번에서 리스너를 등록하므로,
 
 ---
 
+## Bug 3: Editor Lock-out (사진 증발 버그) — v2.08 → v2.09
+
+### 증상
+- 이미지 캡션 입력 후 "적용" 버튼 클릭 시 **이미지가 사라지는** 현상
+- 캡션은 적용되지만 해당 이미지 `<img>` 노드가 DOM에서 삭제됨
+
+### 원인
+- v2.08에서 도입한 `readOnly={imageTooltip.visible}` + `editor.enable(false)`가 **에디터 잠금 상태에서 DOM 변경을 수행**하는 부작용 발생
+- `applyCaption()`이 에디터가 `disabled` 상태일 때 호출되면:
+  1. Quill 내부 Delta 엔진이 비활성화되어 DOM 변경을 추적하지 못함
+  2. `setContent(editor.root.innerHTML)` 호출 시 Quill이 비활성 상태에서 innerHTML을 재파싱하면서 인덱스 손상 발생
+  3. 결과적으로 이미지 노드가 손실되거나 잘못된 위치의 콘텐츠가 삭제됨
+
+### ❌ 실패 원인 (v2.08)
+- ReadOnly Lock은 키보드 이벤트 누수 방지에는 완벽했지만, **에디터 콘텐츠 수정 시점을 고려하지 않음**
+- `applyCaption`은 툴팁이 열린(= 에디터 잠금) 상태에서 실행되므로, 항상 disabled 상태에서 DOM을 변경하게 됨
+
+### ✅ 해결 — Intelligent Unlock (v2.09)
+```typescript
+const applyCaption = useCallback(() => {
+  // ★ DOM 수정 직전에 에디터를 일시적으로 활성화
+  editor.enable(true);
+
+  // 이미지 노드가 DOM에 여전히 존재하는지 검증
+  if (!editor.root.contains(anchor)) {
+    editor.enable(false);  // 안전하게 복원
+    return;
+  }
+
+  // DOM 수정 수행 (캡션 추가/수정/삭제)
+  // ...
+
+  // 콘텐츠 동기화
+  setContent(editor.root.innerHTML);
+
+  // 툴팁 닫기 → useEffect가 자동으로 editor.enable(true) 호출
+  //   (visible이 false가 되므로 readOnly도 false로 전환)
+  setImageTooltip({ ...prev, visible: false });
+}, [...]);
+```
+
+**핵심 원리:**
+1. `editor.enable(true)` — DOM 수정 전 에디터 활성화로 Quill Delta 엔진 정상 동작 보장
+2. `editor.root.contains(anchor)` — 이미지 노드 존재 검증으로 null reference 방지
+3. 툴팁 닫힘 시 `useEffect`가 `visible: false`를 감지하여 자연스럽게 `editor.enable(true)` 호출 (재잠금 불필요)
+
+### 구조적 교훈
+- **ReadOnly 상태에서 Quill Delta를 수정하면 안 된다** — `enable(false)`는 키보드 차단뿐 아니라 내부 Delta 추적까지 비활성화함
+- 에디터 잠금과 콘텐츠 수정은 **상호 배타적** — 수정이 필요한 순간에는 반드시 일시 해제 후 작업
+- DOM 조작 전 노드 존재 검증(`contains`)은 defensive programming의 기본
+
+### 적용
+- `components/PostEditor.tsx` — `applyCaption` 함수에 `editor.enable(true)` 선행 호출 및 노드 존재 검증 추가
+
+---
+
 ## 참고: 유사 패턴 시 체크리스트
 
 - [ ] **Quill/리치 에디터 위에 오버레이/팝오버가 있는가?** → 에디터를 `readOnly`로 잠그고, 컨테이너에 **네이티브 addEventListener**(capture: true) + `stopImmediatePropagation` 적용
@@ -91,7 +147,8 @@ Quill은 1번 또는 3번에서 리스너를 등록하므로,
 - [ ] **에디터 콘텐츠를 DOM으로 직접 수정하는가?** → React state + Quill API로 일괄 반영
 - [ ] **키보드 이벤트가 의도치 않은 컴포넌트로 전달되는가?** → 캡처 vs 버블 단계 확인, 전역 리스너 존재 여부 점검, `readOnly` lock 고려
 - [ ] **팝오버 input에 포커스 시 에디터가 키를 가로채는가?** → `readOnly` lock + 네이티브 이벤트 격리 + auto-focus
+- [ ] **ReadOnly 상태에서 에디터 콘텐츠를 수정하는가?** → 수정 직전 `editor.enable(true)`로 일시 활성화 필수, 수정 완료 후 재잠금 또는 상태 전환으로 자동 복원
 
 ---
 
-*최종 업데이트: 2026-02-27 (v2.08)*
+*최종 업데이트: 2026-02-27 (v2.09)*
