@@ -31,6 +31,7 @@ type QuillEditor = {
   getLength: () => number;
   insertEmbed: (i: number, t: string, u: string, s: string) => void;
   setSelection: (i: number, l: number) => void;
+  blur?: () => void;
 };
 
 const QUILL_MODULES = (imageHandler: () => void) => ({
@@ -307,6 +308,8 @@ export default function PostEditor({ editingPost = null }: Props) {
 
     // Sync DOM → React state via innerHTML so Quill's content stays in sync
     setContent(editor.root.innerHTML);
+    // Ensure editor doesn't reclaim focus after tooltip closes
+    editor.blur?.();
     // Close tooltip after applying
     setImageTooltip((prev) => ({ ...prev, visible: false, imgEl: null }));
   }, [imageTooltip.imgEl, imageTooltip.caption]);
@@ -585,13 +588,33 @@ export default function PostEditor({ editingPost = null }: Props) {
               </>
             )}
 
-            {/* Image Tooltip Popover */}
+            {/* Image Tooltip Popover — Capture-phase isolation wrapper.
+                React-Quill registers keyboard listeners at the document/window level,
+                so bubble-phase stopPropagation on individual inputs is INEFFECTIVE.
+                Intercepting at the CAPTURE phase here prevents the event from ever
+                reaching any deeper listener (Quill toolbar, editor, or global). */}
             {imageTooltip.visible && (
               <div
                 className="image-tooltip-popover absolute z-50 bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-72"
                 style={{
                   top: imageTooltip.top,
                   left: Math.max(0, imageTooltip.left - 144),
+                }}
+                onKeyDownCapture={(e) => {
+                  // Capture-phase: kill the event before Quill sees it
+                  e.stopPropagation();
+                }}
+                onKeyUpCapture={(e) => {
+                  e.stopPropagation();
+                }}
+                onKeyPressCapture={(e) => {
+                  e.stopPropagation();
+                }}
+                onPointerDownCapture={(e) => {
+                  e.stopPropagation();
+                }}
+                onMouseDownCapture={(e) => {
+                  e.stopPropagation();
                 }}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -613,9 +636,11 @@ export default function PostEditor({ editingPost = null }: Props) {
                       type="text"
                       value={imageTooltip.alt}
                       onChange={(e) => handleTooltipAltChange(e.target.value)}
-                      onKeyDown={(e) => e.stopPropagation()}
-                      onKeyPress={(e) => e.stopPropagation()}
-                      onPointerDown={(e) => e.stopPropagation()}
+                      onFocus={() => {
+                        // Force Quill to lose focus so it stops intercepting keys
+                        const editor = (quillRef.current as { getEditor?: () => { blur?: () => void } })?.getEditor?.();
+                        editor?.blur?.();
+                      }}
                       placeholder="이미지를 설명하는 텍스트"
                       className="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -629,15 +654,16 @@ export default function PostEditor({ editingPost = null }: Props) {
                         type="text"
                         value={imageTooltip.caption}
                         onChange={(e) => handleTooltipCaptionChange(e.target.value)}
+                        onFocus={() => {
+                          const editor = (quillRef.current as { getEditor?: () => { blur?: () => void } })?.getEditor?.();
+                          editor?.blur?.();
+                        }}
                         onKeyDown={(e) => {
-                          e.stopPropagation();
                           if (e.key === "Enter") {
                             e.preventDefault();
                             applyCaption();
                           }
                         }}
-                        onKeyPress={(e) => e.stopPropagation()}
-                        onPointerDown={(e) => e.stopPropagation()}
                         placeholder="사진 아래에 표시될 설명"
                         className="flex-1 min-w-0 px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />

@@ -25,33 +25,42 @@
 
 ---
 
-## Bug 2: Keystroke Leakage (키보드 이벤트 버블링)
+## Bug 2: Keystroke Leakage (키보드 이벤트 누수)
 
 ### 증상
 - 이미지 툴팁(Alt/Caption 입력) 내부에서 타이핑할 때 키 입력이 **하단 Quill 에디터로 새어 나감**
 - 플로팅 툴팁 input에 포커스가 있어도 입력 문자가 Quill 본문에 삽입됨
 
 ### 원인
-- 툴팁 `<input>` 요소의 키보드 이벤트가 **버블링**되어 Quill 에디터가 수신
-- Quill은 전역 키 이벤트를 감지하여 입력 처리하므로, 툴팁 내부 입력도 에디터로 전달됨
+- React-Quill / Quill.js는 **document 레벨 또는 캡처 단계**에서 키보드 이벤트를 수신
+- 따라서 개별 input에서 **버블 단계(bubble phase)** `e.stopPropagation()`만 적용하면, 이벤트가 이미 캡처 단계에서 Quill에게 도달한 뒤이므로 **차단 효과 없음**
 
-### 해결
-- 툴팁 내부 입력 필드에 **이벤트 전파 차단** 적용:
-  - `onKeyDown={(e) => e.stopPropagation()}`
-  - `onKeyPress={(e) => e.stopPropagation()}`
-  - `onPointerDown={(e) => e.stopPropagation()}` — Quill 포커스 탈취 방지
+### ❌ 실패한 접근 (v2.06)
+- 각 `<input>` 태그에 `onKeyDown`, `onKeyPress`, `onPointerDown`의 **버블 단계** `stopPropagation` 적용
+- **결과:** Quill의 전역 포커스 관리 및 캡처 단계 리스너가 이벤트를 먼저 가로채므로 **무효**
+
+### ✅ 올바른 해결 — Capture Phase Hard Isolation (v2.07)
+1. **캡처 단계 격리:** 툴팁 컨테이너 `<div>`에 `onKeyDownCapture`, `onKeyUpCapture`, `onKeyPressCapture`, `onPointerDownCapture`, `onMouseDownCapture` 핸들러를 등록하여 **캡처 단계에서 이벤트 전파를 즉시 차단**
+2. **Quill blur 강제:** 툴팁 input의 `onFocus` 시 `quill.blur()`를 호출하여 에디터의 포커스 상태를 명시적으로 해제 → Quill이 키 입력을 자기 것으로 인식하는 것을 원천 차단
+3. **적용 후 포커스 보호:** `applyCaption()` 실행 시에도 `editor.blur()`를 호출하여 DOM 동기화 직후 에디터가 포커스를 되찾아 커서가 점프하는 현상 방지
+
+### 구조적 교훈
+- React-Quill 위에 오버레이/팝오버를 띄울 때는 반드시 **캡처 단계**(onXxxCapture)에서 이벤트를 차단해야 함
+- 버블 단계 stopPropagation은 Quill처럼 전역 이벤트 리스너를 사용하는 라이브러리에 **구조적으로 무효**
+- 추가로 `quill.blur()`를 호출하여 에디터의 "활성 상태"를 끊어주는 것이 belt-and-suspenders 안전 장치
 
 ### 적용
-- `components/PostEditor.tsx` — Alt input, Caption input 모두에 `stopPropagation` 추가
+- `components/PostEditor.tsx` — 툴팁 컨테이너 div에 Capture Phase 이벤트 핸들러, input에 onFocus blur 추가
 
 ---
 
 ## 참고: 유사 패턴 시 체크리스트
 
-- [ ] **Quill/리치 에디터 위에 오버레이/팝오버가 있는가?** → input/textarea에 `stopPropagation` 적용
+- [ ] **Quill/리치 에디터 위에 오버레이/팝오버가 있는가?** → 컨테이너에 **캡처 단계**(onXxxCapture) `stopPropagation` 적용. 버블 단계만으로는 부족!
 - [ ] **에디터 콘텐츠를 DOM으로 직접 수정하는가?** → React state + Quill API로 일괄 반영
-- [ ] **키보드 이벤트가 의도치 않은 컴포넌트로 전달되는가?** → `e.stopPropagation()` 또는 `e.preventDefault()` 검토
+- [ ] **키보드 이벤트가 의도치 않은 컴포넌트로 전달되는가?** → 캡처 vs 버블 단계 확인, 전역 리스너 존재 여부 점검
+- [ ] **팝오버 input에 포커스 시 에디터가 키를 가로채는가?** → `onFocus`에서 `editor.blur()` 호출
 
 ---
 
-*최종 업데이트: 2026-02-27 (v2.06)*
+*최종 업데이트: 2026-02-27 (v2.07)*

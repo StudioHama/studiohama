@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.07",
+    date: "2026-02-27",
+    changes: [
+      "에디터 이벤트 강제 격리(Capture Phase) 및 오답 노트 고도화: 버블 단계 stopPropagation이 React-Quill 전역 리스너에 무효한 구조적 한계 발견. 툴팁 컨테이너에 캡처 단계(onKeyDownCapture 등) 이벤트 차단 적용, input onFocus 시 quill.blur() 호출로 에디터 포커스 탈취 원천 차단. TROUBLESHOOTING.md에 실패 접근법(버블 단계)과 올바른 해결법(캡처 단계) 대비 문서화.",
+    ],
+  },
+  {
     version: "2.06",
     date: "2026-02-27",
     changes: [
