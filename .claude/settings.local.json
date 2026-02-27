@@ -12,7 +12,8 @@
       "Bash(cd C:\\\\Users\\\\JUN\\\\gimpo-gugak:*)",
       "Bash(node:*)",
       "Bash(curl:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git:*)"
     ]
   }
 }
