@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.02",
+    date: "2026-02-27",
+    changes: [
+      "회원 대시보드 사이드바에 '국악원 소식' 링크 추가: 로그인한 수강생(active)이 보는 좌측 네비게이션에 /blog 링크를 '공지사항' 바로 아래, '내 수업' 위에 배치하여 국악원 블로그 콘텐츠 접근성 향상 및 수강생 참여도 증대.",
+    ],
+  },
+  {
     version: "2.01",
     date: "2026-02-27",
     changes: [
