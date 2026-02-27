@@ -18,7 +18,7 @@ const GUEST_NAV: NavItemSimple[] = [
 
 const STUDENT_NAV: NavItemSimple[] = [
   { href: "/notices", label: "공지사항" },
-  { href: "/blog", label: "국악원 소식" },
+  { href: "/blog", label: "블로그" },
   { href: "/my-lessons", label: "내 수업" },
   { href: "/my-info", label: "내 정보" },
 ];
