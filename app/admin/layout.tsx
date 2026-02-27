@@ -89,7 +89,11 @@ export default function AdminLayout({
             {/* Left: Menu Items */}
             <nav className="flex items-center gap-1 lg:gap-2 flex-1">
               {ADMIN_NAV.map((item) => {
-                const isActive = item.href === "/admin" ? pathname === "/admin" : pathname === item.href;
+                const isActive = item.href === "/admin"
+                      ? pathname === "/admin"
+                      : item.href === "/admin/posts"
+                        ? pathname === "/admin/posts"
+                        : pathname.startsWith(item.href);
                 return (
                   <Link
                     key={item.href}

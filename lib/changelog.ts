@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.00",
+    date: "2026-02-27",
+    changes: [
+      "관리자 블로그 에디터 대규모 UX 리뉴얼: 팝업 모달 방식에서 전용 풀페이지 편집기로 전환. 좌측 본문 영역(에디터 max-w-4xl)과 우측 설정 사이드바(카테고리·발행일시·썸네일·외부링크·SEO) 분리 레이아웃 도입. 실제 블로그 게시 화면과 유사한 넓은 편집 환경 제공. 새 글 작성(/admin/posts/manage/new) 및 수정(/admin/posts/manage/edit/[id]) 전용 라우트 신설.",
+    ],
+  },
+  {
     version: "1.99",
     date: "2026-02-27",
     changes: [
