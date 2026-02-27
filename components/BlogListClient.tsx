@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { useInView } from "react-intersection-observer";
 import { formatDateKST } from "@/lib/date-utils";
 import { getBlogPostPath } from "@/lib/blog-utils";
 
@@ -25,25 +26,45 @@ const TABS = [
 type TabKey = (typeof TABS)[number]["key"];
 
 const PAGE_SIZE = 10;
+const LS_KEY = "blog_read_post_ids";
 
-function getPageRange(current: number, total: number): (number | "…")[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-  const delta = 2;
-  const range: (number | "…")[] = [];
-  const left = Math.max(2, current - delta);
-  const right = Math.min(total - 1, current + delta);
-  range.push(1);
-  if (left > 2) range.push("…");
-  for (let p = left; p <= right; p++) range.push(p);
-  if (right < total - 1) range.push("…");
-  range.push(total);
-  return range;
+function getReadPostIds(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return new Set();
+    return new Set(JSON.parse(raw) as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
+function markPostAsRead(postId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    const ids = getReadPostIds();
+    ids.add(postId);
+    localStorage.setItem(LS_KEY, JSON.stringify([...ids]));
+  } catch {
+    // localStorage full or unavailable
+  }
 }
 
 export default function BlogListClient({ posts }: { posts: BlogPost[] }) {
   const [activeTab, setActiveTab] = useState<TabKey>("전체");
   const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [readIds, setReadIds] = useState<Set<string>>(new Set());
+
+  // Load read IDs from localStorage on mount
+  useEffect(() => {
+    setReadIds(getReadPostIds());
+  }, []);
+
+  const { ref: sentinelRef, inView } = useInView({
+    threshold: 0,
+    rootMargin: "200px",
+  });
 
   const tabFiltered = useMemo(() => {
     return posts.filter((post) => {
@@ -59,20 +80,34 @@ export default function BlogListClient({ posts }: { posts: BlogPost[] }) {
     return tabFiltered.filter((post) => post.title.toLowerCase().includes(q));
   }, [tabFiltered, query]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-  const pageStart = (safePage - 1) * PAGE_SIZE;
-  const pagePosts = filteredPosts.slice(pageStart, pageStart + PAGE_SIZE);
+  const visiblePosts = filteredPosts.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredPosts.length;
+
+  // Load more when sentinel is in view
+  useEffect(() => {
+    if (inView && hasMore) {
+      setVisibleCount((prev) => prev + PAGE_SIZE);
+    }
+  }, [inView, hasMore]);
 
   const handleTabChange = (tab: TabKey) => {
     setActiveTab(tab);
-    setPage(1);
+    setVisibleCount(PAGE_SIZE);
   };
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-    setPage(1);
+    setVisibleCount(PAGE_SIZE);
   };
+
+  const handlePostClick = useCallback((postId: string) => {
+    markPostAsRead(postId);
+    setReadIds((prev) => {
+      const next = new Set(prev);
+      next.add(postId);
+      return next;
+    });
+  }, []);
 
   return (
     <>
@@ -120,8 +155,8 @@ export default function BlogListClient({ posts }: { posts: BlogPost[] }) {
         </div>
       ) : (
         <ul>
-          {pagePosts.map((post, idx) => {
-            const num = filteredPosts.length - (pageStart + idx);
+          {visiblePosts.map((post, idx) => {
+            const num = filteredPosts.length - idx;
             const href =
               post.external_url ||
               `/blog/${getBlogPostPath(post.slug ?? null, post.id)}`;
@@ -130,13 +165,21 @@ export default function BlogListClient({ posts }: { posts: BlogPost[] }) {
               "short"
             );
             const isExternal = !!post.external_url;
+            const isRead = readIds.has(post.id);
 
             const content = (
               <>
                 <span className="w-10 shrink-0 text-center text-sm text-gray-400 tabular-nums">
                   {num}
                 </span>
-                <span className="truncate text-[#111] group-hover:text-blue-600 group-hover:underline min-w-0 flex-1">
+                {!isRead && (
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                )}
+                <span
+                  className={`truncate min-w-0 flex-1 group-hover:text-blue-600 group-hover:underline ${
+                    isRead ? "text-gray-500" : "text-[#111] font-medium"
+                  }`}
+                >
                   {post.title}
                 </span>
                 <span
@@ -149,8 +192,9 @@ export default function BlogListClient({ posts }: { posts: BlogPost[] }) {
               </>
             );
 
-            const itemClassName =
-              "flex items-baseline gap-2 py-2.5 group w-full text-left border-b border-gray-100";
+            const itemClassName = `flex items-baseline gap-2 py-2.5 group w-full text-left border-b border-gray-100 ${
+              !isRead ? "bg-blue-50/40" : ""
+            }`;
 
             return (
               <li key={post.id}>
@@ -160,11 +204,16 @@ export default function BlogListClient({ posts }: { posts: BlogPost[] }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={itemClassName}
+                    onClick={() => handlePostClick(post.id)}
                   >
                     {content}
                   </a>
                 ) : (
-                  <Link href={href} className={itemClassName}>
+                  <Link
+                    href={href}
+                    className={itemClassName}
+                    onClick={() => handlePostClick(post.id)}
+                  >
                     {content}
                   </Link>
                 )}
@@ -174,45 +223,40 @@ export default function BlogListClient({ posts }: { posts: BlogPost[] }) {
         </ul>
       )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1 mt-8 flex-wrap">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={safePage === 1}
-            className="px-2 py-1.5 text-sm text-gray-500 disabled:opacity-30 hover:text-gray-800 transition-colors"
-            aria-label="이전 페이지"
-          >
-            ‹
-          </button>
-          {getPageRange(safePage, totalPages).map((p, i) =>
-            p === "…" ? (
-              <span key={`ellipsis-${i}`} className="px-1 text-gray-400 text-sm select-none">
-                …
-              </span>
-            ) : (
-              <button
-                key={p}
-                onClick={() => setPage(p as number)}
-                className={`w-8 h-8 text-sm rounded transition-colors ${
-                  p === safePage
-                    ? "bg-blue-600 text-white font-medium"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                {p}
-              </button>
-            )
-          )}
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={safePage === totalPages}
-            className="px-2 py-1.5 text-sm text-gray-500 disabled:opacity-30 hover:text-gray-800 transition-colors"
-            aria-label="다음 페이지"
-          >
-            ›
-          </button>
+      {/* Infinite Scroll Sentinel */}
+      {hasMore && (
+        <div ref={sentinelRef} className="flex justify-center py-6">
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <svg
+              className="animate-spin h-4 w-4 text-blue-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            불러오는 중...
+          </div>
         </div>
+      )}
+
+      {/* End of list indicator */}
+      {!hasMore && filteredPosts.length > PAGE_SIZE && (
+        <p className="text-center text-sm text-gray-400 py-6">
+          모든 글을 불러왔습니다.
+        </p>
       )}
     </>
   );

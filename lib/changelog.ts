@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.10",
+    date: "2026-02-27",
+    changes: [
+      "블로그 목록 무한 스크롤 및 안 읽은 글 하이라이트 기능 추가: 기존 페이지네이션을 IntersectionObserver 기반 무한 스크롤로 교체하여 끊김 없는 브라우징 지원. localStorage에 읽은 글 ID를 저장하여 안 읽은 글에 파란 점·하이라이트 배경 표시, 읽은 글은 회색 텍스트로 구분. 탭/검색 변경 시 스크롤 상태 자동 초기화.",
+    ],
+  },
+  {
     version: "2.09",
     date: "2026-02-27",
     changes: [
