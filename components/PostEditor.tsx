@@ -452,7 +452,7 @@ export default function PostEditor({ editingPost = null }: Props) {
               </>
             ) : (
               <>
-                <div className="mx-auto max-w-4xl">
+                <div className="mx-auto max-w-2xl">
                   <ReactQuill
                     {...({ ref: quillRef } as object)}
                     theme="snow"
@@ -464,7 +464,7 @@ export default function PostEditor({ editingPost = null }: Props) {
                     className="bg-white [&_.ql-toolbar]:rounded-t-lg [&_.ql-container]:rounded-b-none [&_.ql-editor]:rounded-b-none"
                   />
                 </div>
-                <div className="flex items-center justify-end gap-2 px-3 py-2 bg-[#f8f9fa] border border-t-0 border-gray-300 rounded-b-lg max-w-4xl mx-auto">
+                <div className="flex items-center justify-end gap-2 px-3 py-2 bg-[#f8f9fa] border border-t-0 border-gray-300 rounded-b-lg max-w-2xl mx-auto">
                   <button
                     type="button"
                     onClick={toggleSourceMode}

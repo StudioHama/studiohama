@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.01",
+    date: "2026-02-27",
+    changes: [
+      "관리자 블로그 에디터 WYSIWYG 동기화: 에디터 컨테이너 너비를 블로그 상세 페이지와 동일한 max-w-2xl(672px)로 축소하고, 에디터 좌우 패딩을 24px(px-6)로 맞춰 줄바꿈 위치 일치. CSS 줄간격(line-height)을 1.8, 문단 여백(margin-bottom)을 1.5em으로 뷰어와 완전 통일하여 에디터에서 보이는 레이아웃이 독자 화면과 정확히 일치하도록 개선.",
+    ],
+  },
+  {
     version: "2.00",
     date: "2026-02-27",
     changes: [

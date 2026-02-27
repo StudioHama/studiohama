@@ -195,10 +195,18 @@ body {
   line-height: 1.5 !important;
 }
 
-/* 블로그 본문 뷰어 전용: 가독성 향상 (에디터 쪽 간격은 유지) */
-.blog-detail-article .ql-editor {
+/* 블로그 뷰어 + 관리자 에디터 WYSIWYG 동기화: 줄간격·문단 여백 일치 */
+.blog-detail-article .ql-editor,
+.quill-editor-wrapper .ql-editor {
   line-height: 1.8 !important;
 }
-.blog-detail-article .ql-editor p {
+.blog-detail-article .ql-editor p,
+.quill-editor-wrapper .ql-editor p {
   margin-bottom: 1.5em !important;
+  min-height: 1.8em !important;
+}
+/* 에디터 좌우 패딩을 블로그 뷰어(px-6 = 24px)와 일치시켜 줄바꿈 위치 동기화 */
+.quill-editor-wrapper .ql-editor {
+  padding-left: 24px !important;
+  padding-right: 24px !important;
 }
