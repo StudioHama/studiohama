@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.12",
+    date: "2026-02-27",
+    changes: [
+      "SNS 공유 기능을 드롭다운에서 직관적인 가로 나열형(Inline)으로 UI 개편: X(트위터), 페이스북, 네이버, 링크 복사 4개 아이콘을 한 줄에 배치하여 추가 클릭 없이 즉시 공유 가능. 클릭 깊이 감소로 공유 전환율 향상.",
+    ],
+  },
+  {
     version: "2.11",
     date: "2026-02-27",
     changes: [

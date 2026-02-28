@@ -204,9 +204,12 @@ export default async function BlogDetailPage({ params }: Props) {
         <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#111] mb-2">
           {post.title}
         </h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <p className="text-sm text-gray-500">{formatDateKST(post.published_at || post.created_at, "long")}</p>
-          <ShareButtonLazy />
+          <ShareButtonLazy
+            url={`${siteUrl}/blog/${getBlogPostPath(post.slug ?? null, String(post.id))}`}
+            title={post.meta_title?.trim() || post.title}
+          />
         </div>
       </header>
 

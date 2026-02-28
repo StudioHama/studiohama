@@ -151,6 +151,12 @@ const applyCaption = useCallback(() => {
 
 ---
 
+## Share Menu UX
+
+- **팝오버 제거, 인라인 표시:** SNS 공유 메뉴를 드롭다운/팝오버에서 가로 나열형(Inline)으로 변경하여 클릭 깊이를 줄이고 공유 전환율(share rate) 향상.
+
+---
+
 ## SEO & IndexNow Integration
 
 - **IndexNow 키 위치:** `public/<key>.txt` — 32자 hex 문자열이 파일명이자 내용과 동일
@@ -160,4 +166,4 @@ const applyCaption = useCallback(() => {
 
 ---
 
-*최종 업데이트: 2026-02-27 (v2.11)*
+*최종 업데이트: 2026-02-27 (v2.12)*
