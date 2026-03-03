@@ -181,7 +181,7 @@ export function Navbar() {
           />
         </Link>
 
-        <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0 overflow-x-auto overflow-y-hidden min-h-[40px]">
+        <div className="flex flex-1 items-center justify-start gap-1 sm:gap-2 min-w-0 overflow-x-auto overflow-y-hidden min-h-[40px]">
           {(NAV as NavItemSimple[]).map((item) => {
             const isActive = pathname === item.href || (item.href === "/intro" && pathname.startsWith("/intro")) || (item.href === "/blog" && pathname.startsWith("/blog"));
             return (
