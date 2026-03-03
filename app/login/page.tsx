@@ -86,7 +86,7 @@ export default function LoginPage() {
     }
 
     if (pin.length < 4) {
-      setMessage("비밀번호는 4자리 이상이어야 합니다.");
+      setMessage("비밀번호는 6자리 이상이어야 합니다.");
       setLoading(false);
       return;
     }
@@ -229,7 +229,7 @@ export default function LoginPage() {
     }
 
     if (pin.length < 4) {
-      setMessage("비밀번호는 4자리 이상이어야 합니다.");
+      setMessage("비밀번호는 6자리 이상이어야 합니다.");
       setLoading(false);
       return;
     }
@@ -469,7 +469,7 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  비밀번호 (4자리 이상)
+                  비밀번호 (6자리 이상)
                 </label>
                 <input
                   type="password"
@@ -482,7 +482,7 @@ export default function LoginPage() {
                   placeholder="••••"
                 />
                 <p className="text-xs text-gray-500 mt-1 text-center">
-                  회원가입 시 설정한 비밀번호를 입력하세요 (4자리 이상, 공백 제외)
+                  회원가입 시 설정한 비밀번호를 입력하세요 (6자리 이상, 공백 제외)
                 </p>
                 <button
                   type="button"
@@ -591,7 +591,7 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  비밀번호 (4자리 이상) <span className="text-red-500">*</span>
+                  비밀번호 (6자리 이상) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
@@ -604,7 +604,7 @@ export default function LoginPage() {
                   placeholder="••••"
                 />
                 <p className="text-xs text-gray-500 mt-1 text-center">
-                  로그인 시 사용할 비밀번호 (4자리 이상, 공백 제외)
+                  로그인 시 사용할 비밀번호 (6자리 이상, 공백 제외)
                 </p>
               </div>
 

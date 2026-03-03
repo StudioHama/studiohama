@@ -142,7 +142,7 @@ export default function MyInfoPage() {
     }
 
     if (currentPassword.length < 4 || newPassword.length < 4 || confirmPassword.length < 4) {
-      alert("비밀번호는 4자리 이상이어야 합니다.");
+      alert("비밀번호는 6자리 이상이어야 합니다.");
       return;
     }
 
@@ -319,7 +319,7 @@ export default function MyInfoPage() {
           <div className="space-y-3">
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                현재 비밀번호 (4자리 이상)
+                현재 비밀번호 (6자리 이상)
               </label>
               <input
                 type="password"
@@ -334,7 +334,7 @@ export default function MyInfoPage() {
             
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                새 비밀번호 (4자리 이상)
+                새 비밀번호 (6자리 이상)
               </label>
               <input
                 type="password"
@@ -371,7 +371,7 @@ export default function MyInfoPage() {
             </button>
 
             <p className="text-xs text-gray-500">
-              💡 비밀번호는 4자리 이상입니다 (영문/숫자/특수문자 가능, 공백 제외)
+              💡 비밀번호는 6자리 이상입니다 (영문/숫자/특수문자 가능, 공백 제외)
             </p>
           </div>
         </div>

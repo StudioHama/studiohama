@@ -49,7 +49,7 @@ export default function UpdatePasswordPage() {
     }
 
     if (password.length < 4) {
-      setMessage("비밀번호는 4자리 이상이어야 합니다.");
+      setMessage("비밀번호는 6자리 이상이어야 합니다.");
       setLoading(false);
       return;
     }
@@ -147,7 +147,7 @@ export default function UpdatePasswordPage() {
                 minLength={4}
                 maxLength={15}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="4자리 이상"
+                placeholder="6자리 이상"
               />
             </div>
 
