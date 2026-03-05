@@ -1950,6 +1950,7 @@ export default function AdminLessonsPage() {
                   <option value="">-- 수강생 선택 --</option>
                   {lessons
                     .filter((l) => l.is_active && (l.category.includes("단체") || l.current_session < 4))
+                    .sort((a, b) => a.student_name.localeCompare(b.student_name, "ko"))
                     .map((l) => (
                       <option key={l.id} value={l.id}>
                         {l.category.includes("단체")

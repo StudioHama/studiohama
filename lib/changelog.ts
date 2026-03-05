@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.20",
+    date: "2026-03-05",
+    changes: [
+      "캘린더 '수업 추가' 모달의 수강생 선택 드롭다운 목록을 가나다순(localeCompare 'ko')으로 정렬.",
+    ],
+  },
+  {
     version: "2.19",
     date: "2026-03-05",
     changes: [
