@@ -10,6 +10,14 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.09",
+    date: "2026-03-09",
+    changes: [
+      "app/activities/page.tsx: SSR 클라이언트(server.ts, cookies 의존) → 빌드/ISR 클라이언트(build.ts, cookie 불필요)로 교체. ISR 렌더링 시 cookie 컨텍스트 부재로 인한 조용한 실패 원인 제거.",
+      "Supabase 쿼리 error 필드를 명시적으로 확인하고 콘솔에 기록 — 데이터 미표시 원인 추적 가능.",
+    ],
+  },
+  {
     version: "1.08",
     date: "2026-03-09",
     changes: [

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/server";
+import { createClientForBuild } from "@/lib/supabase/build";
 
 export const revalidate = 3600;
 
@@ -22,16 +22,16 @@ type Activity = {
 export default async function ActivitiesPage() {
   let activities: Activity[] = [];
 
-  try {
-    const supabase = await createClient();
-    const { data } = await supabase
-      .from("activities")
-      .select("id, year, title, description, category, image_url")
-      .order("created_at", { ascending: false });
-    activities = data ?? [];
-  } catch {
-    // DB not yet configured — show empty state
+  const supabase = createClientForBuild();
+  const { data, error } = await supabase
+    .from("activities")
+    .select("id, year, title, description, category, image_url")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[activities] Supabase fetch error:", error.message);
   }
+  activities = data ?? [];
 
   return (
     <section className="mx-auto max-w-2xl px-6 py-12 pb-24">
