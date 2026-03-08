@@ -180,7 +180,7 @@ ANALYZE=true npm run build  # Bundle analysis
 - Version and changelog live in `lib/changelog.ts`.
 - All `changes` entries must be in **Korean**.
 - Increment version for each significant change.
-- Current version: **v1.08**
+- Current version: **v1.10**
 
 ---
 
@@ -188,6 +188,7 @@ ANALYZE=true npm run build  # Bundle analysis
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.10 | 2026-03-09 | 활동 페이지 인스타그램 스타일 갤러리 그리드 재설계, SEO alt 텍스트 전략 |
 | v1.08 | 2026-03-09 | 활동 공개 페이지 force-dynamic 전환 — DB 연동 버그 수정, revalidatePath 추가 |
 | v1.07 | 2026-03-09 | activities 테이블 SQL, 활동 페이지 DB 연동, 활동 관리 어드민, 이미지 WebP 업로드 파이프라인 |
 | v1.06 | 2026-03-09 | 홈페이지 텍스트 전체 중앙 정렬, 글로벌 Footer 완전 제거 |

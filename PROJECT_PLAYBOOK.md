@@ -1,7 +1,7 @@
 # PROJECT PLAYBOOK — 삼척 성악 스튜디오 (Samcheok Vocal Studio)
 
 > Last updated: 2026-03-09
-> Current version: **v1.08**
+> Current version: **v1.10**
 
 ---
 

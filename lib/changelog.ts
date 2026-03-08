@@ -10,6 +10,16 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.10",
+    date: "2026-03-09",
+    changes: [
+      "app/activities/page.tsx: 텍스트 리스트 레이아웃을 인스타그램 스타일 이미지 갤러리(grid-cols-2 / md:grid-cols-3)로 전면 재설계.",
+      "사진이 있는 항목만 갤러리에 표시, 사진 없는 항목은 제외.",
+      "SEO 전략: alt 텍스트에 제목·연도·카테고리·설명을 결합하여 검색 크롤러가 각 사진의 맥락을 완전히 인덱싱하도록 구성. 시각적으로는 텍스트 없는 깔끔한 사진첩 유지.",
+      "호버 오버레이: 마우스 오버 시 제목·연도·카테고리 정보가 반투명 레이어로 부드럽게 표시됨.",
+    ],
+  },
+  {
     version: "1.08",
     date: "2026-03-09",
     changes: [
