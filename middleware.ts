@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
   // Check admin session cookie
   const sessionCookie = request.cookies.get("admin_session")?.value;
 
-  if (!sessionCookie || sessionCookie !== ADMIN_SECRET) {
+  if (!ADMIN_SECRET || !sessionCookie || sessionCookie !== ADMIN_SECRET) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
@@ -26,7 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/admin/:path*"],
 };
