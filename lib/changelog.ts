@@ -10,6 +10,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.08",
+    date: "2026-03-09",
+    changes: [
+      "활동 관리 API(POST/PATCH/DELETE)에 revalidatePath('/activities') 및 revalidatePath('/') 추가: 활동 추가·수정·삭제 즉시 공개 페이지 ISR 캐시 무효화.",
+    ],
+  },
+  {
     version: "1.07",
     date: "2026-03-09",
     changes: [

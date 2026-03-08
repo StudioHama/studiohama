@@ -180,7 +180,7 @@ ANALYZE=true npm run build  # Bundle analysis
 - Version and changelog live in `lib/changelog.ts`.
 - All `changes` entries must be in **Korean**.
 - Increment version for each significant change.
-- Current version: **v1.07**
+- Current version: **v1.08**
 
 ---
 
@@ -188,6 +188,7 @@ ANALYZE=true npm run build  # Bundle analysis
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.08 | 2026-03-09 | 활동 관리 API에 revalidatePath 추가 — 즉시 캐시 무효화 |
 | v1.07 | 2026-03-09 | activities 테이블 SQL, 활동 페이지 DB 연동, 활동 관리 어드민, 이미지 WebP 업로드 파이프라인 |
 | v1.06 | 2026-03-09 | 홈페이지 텍스트 전체 중앙 정렬, 글로벌 Footer 완전 제거 |
 | v1.05 | 2026-03-09 | 홈페이지 김포국악원 1:1 구조로 재설계, HomeBadges·HomeConnect 컴포넌트 신설, 개인정보처리방침 페이지 추가, 어드민 Analytics 제외 |
