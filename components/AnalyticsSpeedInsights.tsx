@@ -7,6 +7,16 @@ const SpeedInsights = dynamic(
   { ssr: false }
 );
 
+const Analytics = dynamic(
+  () => import("@vercel/analytics/react").then((m) => ({ default: m.Analytics })),
+  { ssr: false }
+);
+
 export function AnalyticsSpeedInsights() {
-  return <SpeedInsights />;
+  return (
+    <>
+      <SpeedInsights />
+      <Analytics />
+    </>
+  );
 }

@@ -180,7 +180,7 @@ ANALYZE=true npm run build  # Bundle analysis
 - Version and changelog live in `lib/changelog.ts`.
 - All `changes` entries must be in **Korean**.
 - Increment version for each significant change.
-- Current version: **v1.03**
+- Current version: **v1.04**
 
 ---
 
@@ -188,6 +188,7 @@ ANALYZE=true npm run build  # Bundle analysis
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.04 | 2026-03-09 | Vercel Analytics 추가, /admin/system 시스템·버전 로그 페이지 신설, 홈페이지 타이포그래피 중심 UI로 재설계 |
 | v1.03 | 2026-03-09 | 새 Supabase 프로젝트 마이그레이션: posts 테이블·RLS·updated_at 설정, public-media 버킷 자동 생성, 패키지 업데이트, auth-ui 제거, next.config.ts 호스트명 수정 |
 | v1.02 | 2026-03-08 | 코드베이스 대규모 정리: 김포국악원 잔여 라우트·컴포넌트·공개 파일 완전 제거, 블로그 카테고리 스튜디오 중심으로 교체, 메타데이터 하마 보컬 스튜디오로 전면 교체 |
 | v1.01 | 2026-03-08 | 삼척 성악 스튜디오 초기 셋업: 5개 공개 메뉴 정리, 사용자 인증 완전 제거, 소개 페이지 박준열 단독 프로필로 전환, 관리자 인증을 패스워드+쿠키 방식으로 교체 |

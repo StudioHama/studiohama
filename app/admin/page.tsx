@@ -29,7 +29,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <Link
           href="/admin/posts/manage"
           className="flex items-center gap-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 p-5 group"
@@ -53,6 +53,17 @@ export default function AdminDashboardPage() {
           <div className="flex-1">
             <p className="text-lg font-bold text-gray-800">공개 블로그 보기</p>
             <p className="text-sm text-gray-500">새 탭으로 열기 ↗</p>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/system"
+          className="flex items-center gap-4 bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md rounded-xl transition-all duration-200 p-5 group"
+        >
+          <div className="text-4xl">📋</div>
+          <div className="flex-1">
+            <p className="text-lg font-bold text-gray-800">시스템 & 버전 로그</p>
+            <p className="text-sm text-gray-500">버전 v{CURRENT_VERSION} · 기술 스택 →</p>
           </div>
         </Link>
       </div>

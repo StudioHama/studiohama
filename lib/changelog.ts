@@ -10,6 +10,16 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.04",
+    date: "2026-03-09",
+    changes: [
+      "Vercel Analytics 추가: AnalyticsSpeedInsights 컴포넌트에 <Analytics /> 삽입.",
+      "관리자 대시보드에 '시스템 & 버전 로그' 페이지(/admin/system) 신규 생성: 현재 버전, 전체 업데이트 히스토리(타임라인), 기술 스택 목록 표시.",
+      "어드민 네비게이션에 '시스템 로그' 메뉴 추가.",
+      "홈페이지 UI 개편: 밀집된 그리드 레이아웃 제거, 타이포그래피 중심의 미니멀 수직 플로우로 재설계 (김포국악원 스타일 참조).",
+    ],
+  },
+  {
     version: "1.03",
     date: "2026-03-09",
     changes: [
