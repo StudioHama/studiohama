@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { createClientForBuild } from "@/lib/supabase/build";
+import { createClient } from "@/lib/supabase/server";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "활동 | 하마 보컬 스튜디오",
@@ -22,7 +22,7 @@ type Activity = {
 export default async function ActivitiesPage() {
   let activities: Activity[] = [];
 
-  const supabase = createClientForBuild();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("activities")
     .select("id, year, title, description, category, image_url")

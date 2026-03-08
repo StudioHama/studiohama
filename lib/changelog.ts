@@ -10,18 +10,12 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
-    version: "1.09",
-    date: "2026-03-09",
-    changes: [
-      "app/activities/page.tsx: SSR 클라이언트(server.ts, cookies 의존) → 빌드/ISR 클라이언트(build.ts, cookie 불필요)로 교체. ISR 렌더링 시 cookie 컨텍스트 부재로 인한 조용한 실패 원인 제거.",
-      "Supabase 쿼리 error 필드를 명시적으로 확인하고 콘솔에 기록 — 데이터 미표시 원인 추적 가능.",
-    ],
-  },
-  {
     version: "1.08",
     date: "2026-03-09",
     changes: [
-      "활동 관리 API(POST/PATCH/DELETE)에 revalidatePath('/activities') 및 revalidatePath('/') 추가: 활동 추가·수정·삭제 즉시 공개 페이지 ISR 캐시 무효화.",
+      "활동 공개 페이지(/activities) 연동 버그 수정: dynamic='force-dynamic'으로 전환하여 매 요청마다 최신 데이터 렌더링 (빌드 시 Invalid API key로 빈 정적 페이지 생성되던 문제 해결).",
+      "활동 관리 API(POST/PATCH/DELETE)에 revalidatePath('/activities') 및 revalidatePath('/') 추가.",
+      "Supabase 쿼리 error 필드 명시적 확인 및 콘솔 기록 추가.",
     ],
   },
   {
