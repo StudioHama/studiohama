@@ -10,6 +10,19 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.07",
+    date: "2026-03-09",
+    changes: [
+      "supabase/activities_setup.sql 신규 생성: activities 테이블(id, year, title, description, category, image_url, created_at, updated_at), RLS 공개 SELECT 정책, updated_at 자동 트리거.",
+      "app/activities/page.tsx 개편: 정적 하드코딩 데이터 제거, Supabase DB에서 동적 페치(revalidate=3600). 이미지 썸네일(80×60) 엘레강트하게 목록에 통합.",
+      "app/admin/activities/page.tsx 신규 생성: 활동 전체 CRUD(추가/수정/삭제) 관리 페이지. 이미지 업로드 시 client-side WebP 압축 후 서버 업로드.",
+      "app/api/admin/activities/route.ts 신규 생성: GET/POST/PATCH/DELETE — service_role 키로 activities 테이블 관리. admin_session 쿠키 인증.",
+      "app/api/admin/activities/upload/route.ts 신규 생성: 이미지 FormData 수신 → Supabase public-media 버킷에 service_role로 업로드 → 공개 URL 반환.",
+      "이미지 자동 WebP 변환/압축: 기존 lib/upload-image.ts의 normalizeImage()를 활용 (OffscreenCanvas, max 1600px, quality 0.85). browser-image-compression 외부 패키지 불필요.",
+      "어드민 레이아웃에 '활동 관리' 내비게이션 메뉴 추가, 대시보드에 활동 관리 퀵액션 카드(에메랄드) 추가.",
+    ],
+  },
+  {
     version: "1.06",
     date: "2026-03-09",
     changes: [

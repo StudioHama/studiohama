@@ -57,6 +57,20 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
+          href="/admin/activities"
+          className="flex items-center gap-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 p-5 group"
+        >
+          <div className="text-4xl">🎭</div>
+          <div className="flex-1">
+            <p className="text-lg font-bold">활동 관리</p>
+            <p className="text-sm text-emerald-100">공연 · 오페라 · 합창 추가/수정 →</p>
+          </div>
+          <div className="text-emerald-200 group-hover:translate-x-1 transition-transform text-xl">
+            →
+          </div>
+        </Link>
+
+        <Link
           href="/admin/system"
           className="flex items-center gap-4 bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md rounded-xl transition-all duration-200 p-5 group"
         >
