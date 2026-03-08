@@ -10,6 +10,14 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.06",
+    date: "2026-03-09",
+    changes: [
+      "홈페이지 텍스트 전체 중앙 정렬: article에 mx-auto·text-center 적용, 본문 단락 div에 text-center 추가.",
+      "글로벌 Footer 컴포넌트 제거: app/layout.tsx에서 <Footer /> 렌더링 및 import 삭제. 홈페이지가 HomeConnect 이후 깔끔하게 종료됨.",
+    ],
+  },
+  {
     version: "1.05",
     date: "2026-03-09",
     changes: [

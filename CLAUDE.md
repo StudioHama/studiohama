@@ -180,7 +180,7 @@ ANALYZE=true npm run build  # Bundle analysis
 - Version and changelog live in `lib/changelog.ts`.
 - All `changes` entries must be in **Korean**.
 - Increment version for each significant change.
-- Current version: **v1.05**
+- Current version: **v1.06**
 
 ---
 
@@ -188,6 +188,7 @@ ANALYZE=true npm run build  # Bundle analysis
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.06 | 2026-03-09 | 홈페이지 텍스트 전체 중앙 정렬, 글로벌 Footer 완전 제거 |
 | v1.05 | 2026-03-09 | 홈페이지 김포국악원 1:1 구조로 재설계, HomeBadges·HomeConnect 컴포넌트 신설, 개인정보처리방침 페이지 추가, 어드민 Analytics 제외 |
 | v1.04 | 2026-03-09 | Vercel Analytics 추가, /admin/system 시스템·버전 로그 페이지 신설, 홈페이지 타이포그래피 중심 UI로 재설계 |
 | v1.03 | 2026-03-09 | 새 Supabase 프로젝트 마이그레이션: posts 테이블·RLS·updated_at 설정, public-media 버킷 자동 생성, 패키지 업데이트, auth-ui 제거, next.config.ts 호스트명 수정 |

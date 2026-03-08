@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <article className="px-8 py-10 sm:px-12 sm:py-14 max-w-[540px]">
+    <article className="px-8 py-10 sm:px-12 sm:py-14 max-w-[540px] mx-auto text-center">
       <link rel="preload" as="image" href={HERO_IMAGE} fetchPriority="high" />
 
       <p className="text-[11px] tracking-[0.28em] text-gray-400 uppercase mb-3">
@@ -41,7 +41,7 @@ export default function HomePage() {
         />
       </figure>
 
-      <div className="space-y-6 text-[15px] text-[#333] leading-[1.95]">
+      <div className="space-y-6 text-[15px] text-[#333] leading-[1.95] text-center">
         <p>
           "성악은 어렵고 낯설다"는 편견, 우리도 잘 압니다. 하지만 실제로 만나보면
           클래식의 정수와 우리 고유의 민요 선율이 마음 깊은 곳에서 자연스럽게 스며드는

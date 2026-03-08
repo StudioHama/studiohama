@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Serif_KR, Noto_Sans_KR, Gowun_Dodum, Nanum_Myeongjo } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
-import { Footer } from "../components/layout/Footer";
 import { AnalyticsSpeedInsights } from "../components/AnalyticsSpeedInsights";
 
 const notoSerif = Noto_Serif_KR({
@@ -119,7 +118,6 @@ export default function RootLayout({
         <main className="md:ml-[120px] min-h-screen">
           {children}
         </main>
-        <Footer />
         <AnalyticsSpeedInsights />
       </body>
     </html>
