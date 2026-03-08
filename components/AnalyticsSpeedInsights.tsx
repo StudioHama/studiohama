@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 
 const SpeedInsights = dynamic(
   () => import("@vercel/speed-insights/next").then((m) => ({ default: m.SpeedInsights })),
@@ -13,6 +14,11 @@ const Analytics = dynamic(
 );
 
 export function AnalyticsSpeedInsights() {
+  const pathname = usePathname();
+
+  // Do not track admin visits
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <>
       <SpeedInsights />

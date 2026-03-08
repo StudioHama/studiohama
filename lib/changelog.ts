@@ -10,6 +10,17 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.05",
+    date: "2026-03-09",
+    changes: [
+      "홈페이지를 김포국악원 원본 레이아웃과 동일한 구조로 재설계: h1 → figure → 본문 단락 → 배지 → 커넥트 순서의 수직 플로우.",
+      "components/home/HomeBadges.tsx 신규 생성: 황해도무형문화재·삼척시립합창단·김포오페라단 배지 플레이스홀더.",
+      "components/home/HomeConnect.tsx 신규 생성: Instagram·블로그·개인정보처리방침 링크.",
+      "app/privacy/page.tsx 신규 생성: 개인정보처리방침 페이지.",
+      "AnalyticsSpeedInsights: usePathname() 기반 어드민 방문 추적 제외 (/admin/* 경로에서 Analytics·SpeedInsights 비활성화).",
+    ],
+  },
+  {
     version: "1.04",
     date: "2026-03-09",
     changes: [
