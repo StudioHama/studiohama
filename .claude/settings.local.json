@@ -16,7 +16,8 @@
       "Bash(git:*)",
       "Bash(npx next:*)",
       "Bash(npm i:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "WebSearch"
     ]
   }
 }
