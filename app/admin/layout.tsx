@@ -2,16 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 const ADMIN_NAV = [
-  { href: "/admin", label: "Home" },
-  { href: "/admin/approvals", label: "회원승인" },
-  { href: "/admin/students", label: "회원관리" },
-  { href: "/admin/lessons", label: "수업관리" },
-  { href: "/admin/posts", label: "공지사항" },
-  { href: "/admin/posts/manage", label: "소식 관리" },
+  { href: "/admin", label: "홈" },
+  { href: "/admin/posts/manage", label: "블로그 관리" },
 ];
 
 export default function AdminLayout({
@@ -19,81 +13,29 @@ export default function AdminLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const supabase = createClient();
-
-  useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  async function checkAdminAccess() {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        router.push("/admin/login");
-        return;
-      }
-
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("role, status")
-        .eq("id", user.id)
-        .single();
-
-      if (error || !profile || profile.role !== "admin" || profile.status !== "active") {
-        router.push("/");
-        return;
-      }
-
-      setIsAdmin(true);
-    } catch (error) {
-      console.error("Error checking admin access:", error);
-      router.push("/");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    router.push("/");
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-500">확인 중...</p>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return null;
-  }
 
   // Skip header for login page
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
 
+  async function handleLogout() {
+    await fetch("/api/admin-logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top Navigation Bar */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Left: Menu Items */}
             <nav className="flex items-center gap-1 lg:gap-2 flex-1">
               {ADMIN_NAV.map((item) => {
-                const isActive = item.href === "/admin"
-                      ? pathname === "/admin"
-                      : item.href === "/admin/posts"
-                        ? pathname === "/admin/posts"
-                        : pathname.startsWith(item.href);
+                const isActive =
+                  item.href === "/admin"
+                    ? pathname === "/admin"
+                    : pathname.startsWith(item.href);
                 return (
                   <Link
                     key={item.href}
@@ -110,7 +52,6 @@ export default function AdminLayout({
               })}
             </nav>
 
-            {/* Right: Logout Button */}
             <div className="flex items-center ml-4">
               <button
                 onClick={handleLogout}
@@ -123,7 +64,6 @@ export default function AdminLayout({
         </div>
       </header>
 
-      {/* Main Content - Full Width Container */}
       <main className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}

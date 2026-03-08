@@ -15,7 +15,8 @@
       "Bash(rm:*)",
       "Bash(git:*)",
       "Bash(npx next:*)",
-      "Bash(npm i:*)"
+      "Bash(npm i:*)",
+      "Bash(cat:*)"
     ]
   }
 }

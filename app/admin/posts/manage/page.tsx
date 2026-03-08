@@ -44,24 +44,9 @@ export default function AdminPostsManagePage() {
 
   async function checkAdminAccess() {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push("/admin/login");
-        return;
-      }
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role, status")
-        .eq("id", user.id)
-        .single();
-      if (profile?.role !== "admin" || profile?.status !== "active") {
-        router.push("/");
-        return;
-      }
       await loadPosts();
     } catch (error) {
       console.error("Access check error:", error);
-      router.push("/");
     } finally {
       setLoading(false);
     }
@@ -72,7 +57,7 @@ export default function AdminPostsManagePage() {
       const { data, error } = await supabase
         .from("posts")
         .select("id, slug, title, content, category, created_at, published_at, views")
-        .in("category", ["소식", "음악교실", "국악원소식"])
+        .not("category", "eq", "공지사항")
         .order("created_at", { ascending: false });
 
       if (error) throw error;

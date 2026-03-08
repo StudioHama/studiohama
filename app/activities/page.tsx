@@ -1,108 +1,96 @@
-import { createClient } from '@supabase/supabase-js';
 import type { Metadata } from "next";
-import Image from "next/image";
-
-export const revalidate = 60; // Cache for 60 seconds (ISR)
-
-// 1. Supabase 연결
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const metadata: Metadata = {
-  title: "활동 갤러리 | 김포국악원 (Activities)",
+  title: "활동 | 하마 보컬 스튜디오",
   description:
-    "김포국악원의 주요 공연 및 행사 활동. 김포예술제, 서도소리 공연, 찾아가는 국악 한마당 등.",
+    "박준열 성악가의 공연, 무대, 행사 활동 기록. 오페라, 합창, 민요 무대 등 다양한 활동을 소개합니다.",
 };
 
-export default async function ActivitiesPage() {
-  // 2. Supabase에서 사진 가져오기 (최신순)
-  const { data: photos, error } = await supabase
-    .from('gallery')
-    .select('*')
-    .order('created_at', { ascending: false });
+const ACTIVITIES = [
+  {
+    year: "2025",
+    title: "강(江)의 소리, 꽃보자기에 물들다",
+    place: "김포 한옥마을 천현정 광장",
+    type: "공연",
+  },
+  {
+    year: "2024",
+    title: "서도소리와 향연",
+    place: "통진두레문화센터",
+    type: "공연",
+  },
+  {
+    year: "2023",
+    title: "김포 옛 잡가를 만나다",
+    place: "김포아트홀",
+    type: "공연",
+  },
+  {
+    year: "2015 – 2022",
+    title: "국립오페라단 갈라콘서트 (카르멘, 라트라비아타 외)",
+    place: "서울 예술의전당",
+    type: "오페라",
+  },
+  {
+    year: "2014",
+    title: "카르멘",
+    place: "세종문화회관",
+    type: "오페라",
+  },
+  {
+    year: "2008",
+    title: "루치아 디 람메르무어",
+    place: "대전 예술의전당",
+    type: "오페라",
+  },
+  {
+    year: "2006",
+    title: "파우스트",
+    place: "서울 예술의전당",
+    type: "오페라",
+  },
+];
 
-  if (error) console.error("데이터 로딩 실패:", error);
-
-  // 3. Masonry 레이아웃을 위해 데이터 반으로 나누기 (왼쪽 줄 / 오른쪽 줄)
-  // (데이터가 없으면 빈 배열 [])
-  const allPhotos = photos || [];
-  const leftColumn = allPhotos.filter((_, i) => i % 2 === 0); // 짝수 번째 (0, 2, 4...)
-  const rightColumn = allPhotos.filter((_, i) => i % 2 !== 0); // 홀수 번째 (1, 3, 5...)
-
+export default function ActivitiesPage() {
   return (
     <section className="mx-auto max-w-2xl px-6 py-12 pb-24">
       {/* 헤더 */}
       <div className="mb-12">
         <h1 className="font-serif text-3xl font-bold tracking-tight text-[#111] mb-4">
-          활동 갤러리
+          활동
         </h1>
         <p className="text-[#666] leading-relaxed">
-          무대 위에서의 열정과 현장에서의 생생한 모습을 기록합니다.
+          무대 위에서 쌓아온 박준열 성악가의 공연 및 활동 기록입니다.
           <br />
-          끊임없이 소통하며 우리 소리를 알리는 김포국악원의 발자취입니다.
+          오페라, 합창, 민요 무대를 넘나들며 끊임없이 소리를 탐구합니다.
         </p>
       </div>
 
-      {/* Masonry 느낌 그리드 (2열) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        
-        {/* 왼쪽 기둥 */}
-        <div className="space-y-6">
-          {leftColumn.map((photo) => (
-            <PhotoCard
-              key={photo.id}
-              src={photo.image_url}
-              title={photo.caption || "활동 사진"} // 설명 없으면 기본값
-              year={photo.created_at.substring(0, 4)} // "2024-02-10..."에서 앞 4글자만 자름
-            />
-          ))}
-          {/* 사진이 하나도 없을 때 안내 문구 (왼쪽에만 표시) */}
-          {allPhotos.length === 0 && (
-            <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-500">
-              아직 등록된 활동 사진이 없습니다.
+      {/* 활동 목록 */}
+      <div className="border-t border-[#111]/10">
+        {ACTIVITIES.map((item, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-1 md:grid-cols-[100px_1fr_auto] gap-y-1 md:gap-x-4 py-5 border-b border-[#111]/5 hover:bg-[#111]/[0.015] transition-colors"
+          >
+            <span className="font-mono text-sm tabular-nums text-gray-400 whitespace-nowrap">
+              {item.year}
+            </span>
+            <div className="min-w-0">
+              <p className="font-medium text-[#111] leading-snug">{item.title}</p>
+              <p className="text-sm text-gray-500 mt-0.5">{item.place}</p>
             </div>
-          )}
-        </div>
-
-        {/* 오른쪽 기둥 */}
-        <div className="space-y-6">
-          {rightColumn.map((photo) => (
-            <PhotoCard
-              key={photo.id}
-              src={photo.image_url}
-              title={photo.caption || "활동 사진"}
-              year={photo.created_at.substring(0, 4)}
-            />
-          ))}
-        </div>
-
+            <span className="hidden md:inline-block text-xs text-gray-400 font-medium self-start mt-1 shrink-0 whitespace-nowrap">
+              {item.type}
+            </span>
+          </div>
+        ))}
       </div>
-    </section>
-  );
-}
 
-// --- 카드 컴포넌트 (디자인 그대로 유지) ---
-function PhotoCard({
-  src,
-  title,
-  year,
-}: {
-  src: string;
-  title: string;
-  year: string;
-}) {
-  return (
-    <div className="group relative overflow-hidden rounded-xl bg-[#111]/5">
-      <Image
-        src={src}
-        alt="활동 사진"
-        width={500}
-        height={400}
-        className="h-auto w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        sizes="(max-width: 640px) 100vw, 50vw"
-      />
-      {/* 텍스트 나오는 부분을 싹 지웠습니다! 이제 사진만 깔끔하게 나옵니다. */}
-    </div>
+      {/* 업데이트 안내 */}
+      <p className="mt-10 text-sm text-center text-gray-400">
+        더 많은 활동 사진 및 영상은 순차적으로 업데이트됩니다.
+      </p>
+    </section>
   );
 }

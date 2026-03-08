@@ -24,7 +24,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 
 const BUCKET = "public-media";
-const BLOG_CATEGORIES = ["음악교실", "국악원소식"] as const;
+const BLOG_CATEGORIES = ["성악", "보컬", "민요", "공연"] as const;
 type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
 type QuillEditor = {
@@ -101,7 +101,7 @@ type ImageTooltipState = {
 
 export default function PostEditor({ editingPost = null }: Props) {
   const [title, setTitle] = useState("");
-  const [postCategory, setPostCategory] = useState<BlogCategory>("음악교실");
+  const [postCategory, setPostCategory] = useState<BlogCategory>("성악");
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [externalUrl, setExternalUrl] = useState("");
@@ -135,7 +135,7 @@ export default function PostEditor({ editingPost = null }: Props) {
       setPostCategory(
         BLOG_CATEGORIES.includes(editingPost.category as BlogCategory)
           ? (editingPost.category as BlogCategory)
-          : "음악교실"
+          : "성악"
       );
       setContent(editingPost.content);
       setExternalUrl(editingPost.external_url || "");
@@ -147,7 +147,7 @@ export default function PostEditor({ editingPost = null }: Props) {
       setPublishedAt(toDatetimeLocalKST(editingPost.published_at));
     } else {
       setTitle("");
-      setPostCategory("음악교실");
+      setPostCategory("성악");
       setContent("");
       setExternalUrl("");
       setThumbnailFile(null);
@@ -557,10 +557,7 @@ export default function PostEditor({ editingPost = null }: Props) {
         alert("✅ 게시글이 등록되었습니다.");
       }
 
-      // IndexNow: 실제 발행된 글만 검색엔진에 핑 (예약/미래 발행 글 제외)
-      if (publishedAtValue && new Date(publishedAtValue) <= new Date()) {
-        fetch(`/api/indexnow?path=${encodeURIComponent(postPath)}`).catch(() => {});
-      }
+
 
       router.push("/admin/posts/manage");
     } catch (err: unknown) {
@@ -775,7 +772,7 @@ export default function PostEditor({ editingPost = null }: Props) {
                     className="text-blue-600"
                   />
                   <span className={`text-sm font-medium px-2 py-0.5 rounded ${
-                    cat === "음악교실"
+                    cat === "성악"
                       ? "bg-blue-100 text-blue-700"
                       : "bg-green-100 text-green-700"
                   }`}>

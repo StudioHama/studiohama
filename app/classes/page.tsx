@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "수업 및 체험 | 김포국악원 (Classes)",
+  title: "수업 안내 | 하마 보컬 스튜디오",
   description:
-    "서도/경기민요 정규 수업 및 대취타, 국악기 만들기 체험 학습. 네이버 예약 가능.",
+    "삼척 하마 보컬 스튜디오의 수업 안내. 성악 전공·입시 과정부터 취미 보컬까지, 박준열 성악가의 1:1 맞춤 레슨.",
 };
 
 export default function ClassesPage() {
@@ -15,123 +15,126 @@ export default function ClassesPage() {
           수업 안내
         </h1>
         <p className="text-[#666] leading-relaxed">
-          전문가를 위한 심화 과정부터 아이들의 역사 의식을 높이는 체험 학습까지.
+          성악 전공·입시 심화 과정부터 취미 보컬까지,
           <br />
-          무형문화재 이수자 원장님이 직접 설계한 체계적인 국악 교육을 만나보세요.
+          박준열 성악가가 직접 설계한 1:1 맞춤 레슨을 경험해 보세요.
           <br />
-          빠른상담 : <a href="tel:010-5948-1843">010-5948-1843</a>
+          빠른 상담 :{" "}
+          <a href="tel:010-2239-1840" className="underline hover:no-underline">
+            010-2239-1840
+          </a>
         </p>
       </div>
 
-      {/* 1. 정규 수업 (민요) */}
+      {/* 1. 성악 / 클래식 보컬 */}
       <div className="mb-20">
         <h2 className="text-xl font-bold text-[#111] mb-6 border-b border-[#111]/10 pb-2">
-          1. 민요 정규반
+          1. 성악 · 클래식 보컬
         </h2>
         <p className="text-[#666] text-sm leading-relaxed mb-6">
-          경기소리와 서도소리의 깊이를 배우는 정규 과정입니다.
+          오페라, 아리아, 가곡 등 클래식 레퍼토리를 체계적으로 배우는 과정입니다.
+          발성 교정부터 무대 표현까지 전 과정을 커버합니다.
         </p>
 
         <div className="border-t border-[#111]/10">
           <ClassRow
-            category="전문인 과정"
-            target="전공 / 입시 / 지도자"
-            time="개인지도 (시간 조율)"
-            price="200,000원"
+            category="전공·입시 과정"
+            target="성악 전공 / 입시생 / 지도자"
+            time="개인지도 (일정 협의)"
+            price="200,000원~"
             unit="/ 1시간"
           />
           <ClassRow
-            category="성인 단체반"
-            target="일반인 / 취미"
-            time="수요일 15:00, 18:00"
-            price="100,000원"
+            category="성인 취미반"
+            target="성인 일반 / 합창단원"
+            time="주 1~2회 (시간 협의)"
+            price="100,000원~"
             unit="/ 월 (주 1회)"
           />
           <ClassRow
-            category="어린이 단체반"
-            target="초등 / 청소년"
-            time="화요일 17:00, 18:00"
-            price="100,000원"
+            category="청소년반"
+            target="중·고등학생"
+            time="주 1회 (시간 협의)"
+            price="100,000원~"
             unit="/ 월 (주 1회)"
           />
         </div>
       </div>
 
-      {/* 2. 국악 문화 체험 (2종 분리) */}
+      {/* 2. 서도민요 · 전통 보컬 */}
       <div className="mb-20">
-        <div className="flex flex-wrap items-end justify-between gap-2 mb-6 border-b border-[#111]/10 pb-2">
-          <h2 className="text-xl font-bold text-[#111]">
-            2. 국악 문화 체험
-          </h2>
-          <span className="text-sm text-[#666] font-medium tabular-nums">
-            1시간 / 20,000원 (1인)
-          </span>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 mb-8">
-          {/* 체험 A: 역사와 소리 & 만들기 */}
-          <div className="rounded-xl p-6 border border-[#111]/10 bg-[#111]/[0.02] hover:border-[#111]/20 transition-colors">
-            <span className="inline-block px-2 py-1 mb-4 text-xs font-bold text-[#111] bg-[#111]/10 rounded-md">
-              인기 프로그램
-            </span>
-            <h3 className="text-lg font-bold text-[#111] mb-2">
-              역사와 소리 & 장구 만들기
-            </h3>
-            <p className="text-xs text-[#999] mb-3 font-medium">대상: 전연령 (유치원 ~ 성인)</p>
-            <p className="text-sm text-[#666] mb-4 leading-relaxed">
-              송리결 원장의 역사 특강과 밀양아리랑 배우기, 장구(태평소) 만들기로 우리 소리를 체험합니다.
-            </p>
-            <ul className="space-y-2">
-              <CheckItem text="송리결 원장 역사 특강" />
-              <CheckItem text="밀양아리랑 배우기" />
-              <CheckItem text="장구 만들기 (전연령)" />
-              <CheckItem text="태평소 만들기 (초등/미취학 대체)" />
-            </ul>
-          </div>
-
-          {/* 체험 B: 대취타 체험 */}
-          <div className="rounded-xl p-6 border border-[#111]/10 bg-[#111]/[0.02] hover:border-[#111]/20 transition-colors">
-            <span className="inline-block px-2 py-1 mb-4 text-xs font-bold text-[#111] bg-[#111]/10 rounded-md">
-              이색 체험
-            </span>
-            <h3 className="text-lg font-bold text-[#111] mb-2">
-              대취타 체험
-            </h3>
-            <p className="text-xs text-[#999] mb-3 font-medium">대상: 3세 ~ 성인</p>
-            <p className="text-sm text-[#666] mb-4 leading-relaxed">
-              왕의 행차에 쓰이던 대취타 악기(나발, 나각 등)를 직접 만져보고 연주해보는 특별 체험입니다.
-            </p>
-            <ul className="space-y-2">
-              <CheckItem text="실제 대취타 악기 터치 & 연주" />
-              <CheckItem text="나발, 나각 등 희귀 악기 체험" />
-              <CheckItem text="3세부터 성인까지 참여 가능" />
-            </ul>
-          </div>
-        </div>
-
-        {/* 예약 CTA */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <a
-            href="https://booking.naver.com/booking/6/bizes/937607"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[#03C75A] text-white font-bold rounded-lg hover:bg-[#02b150] transition-colors shadow-sm"
-          >
-            <span aria-hidden>📅</span> 네이버 예약하기
-          </a>
-          <a
-            href="http://pf.kakao.com/_xfKTHxj/chat"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[#FAE100] text-[#371D1E] font-bold rounded-lg hover:bg-[#ebd300] transition-colors shadow-sm"
-          >
-            <span aria-hidden>💬</span> 카카오톡 상담하기
-          </a>
-        </div>
-        <p className="mt-3 text-center text-xs text-[#999]">
-          * 단체 예약은 카카오톡 채널로 문의주시면 빠르게 답변 드립니다.
+        <h2 className="text-xl font-bold text-[#111] mb-6 border-b border-[#111]/10 pb-2">
+          2. 서도민요 · 전통 보컬
+        </h2>
+        <p className="text-[#666] text-sm leading-relaxed mb-6">
+          황해도무형문화재 제3호 놀량사거리 전수자인 박준열 선생님이 직접 지도하는
+          서도소리 및 전통 민요 과정입니다.
         </p>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-xl p-6 border border-[#111]/10 bg-[#111]/[0.02] hover:border-[#111]/20 transition-colors">
+            <span className="inline-block px-2 py-1 mb-4 text-xs font-bold text-[#111] bg-[#111]/10 rounded-md">
+              전수 과정
+            </span>
+            <h3 className="text-lg font-bold text-[#111] mb-2">
+              서도소리 정규반
+            </h3>
+            <p className="text-xs text-[#999] mb-3 font-medium">
+              대상: 전통 소리에 관심 있는 성인
+            </p>
+            <p className="text-sm text-[#666] leading-relaxed">
+              놀량사거리, 수심가 등 서도소리의 핵심 레퍼토리를 체계적으로
+              학습합니다. 전수자 자격증 취득을 목표로 하는 분도 환영합니다.
+            </p>
+          </div>
+
+          <div className="rounded-xl p-6 border border-[#111]/10 bg-[#111]/[0.02] hover:border-[#111]/20 transition-colors">
+            <span className="inline-block px-2 py-1 mb-4 text-xs font-bold text-[#111] bg-[#111]/10 rounded-md">
+              취미 입문
+            </span>
+            <h3 className="text-lg font-bold text-[#111] mb-2">
+              민요 취미반
+            </h3>
+            <p className="text-xs text-[#999] mb-3 font-medium">
+              대상: 민요가 처음인 성인 누구나
+            </p>
+            <p className="text-sm text-[#666] leading-relaxed">
+              아리랑, 밀양아리랑 등 친숙한 민요부터 시작해 우리 소리의 매력을
+              천천히 발견해 가는 입문 과정입니다.
+            </p>
+          </div>
+        </div>
       </div>
+
+      {/* 수업 안내 사항 */}
+      <div className="mb-20 rounded-xl p-6 border border-[#111]/10 bg-[#111]/[0.02]">
+        <h2 className="text-base font-bold text-[#111] mb-4">수업 안내 사항</h2>
+        <ul className="space-y-2 text-sm text-[#666]">
+          <CheckItem text="모든 수업은 1:1 개인 레슨을 기본으로 합니다." />
+          <CheckItem text="첫 수업 전 무료 상담을 통해 수준과 목표를 파악합니다." />
+          <CheckItem text="수업 장소: 강원도 삼척시 (정확한 위치는 상담 시 안내)" />
+          <CheckItem text="수강료 및 시간표는 상담 후 개별 조율됩니다." />
+        </ul>
+      </div>
+
+      {/* CTA */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <a
+          href="tel:010-2239-1840"
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-[#111] text-white font-bold rounded-lg hover:bg-[#333] transition-colors shadow-sm"
+        >
+          전화 상담하기
+        </a>
+        <a
+          href="/contact"
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 border border-[#111]/20 text-[#111] font-bold rounded-lg hover:bg-[#111]/5 transition-colors"
+        >
+          문의 남기기
+        </a>
+      </div>
+      <p className="mt-3 text-center text-xs text-[#999]">
+        * 단체 문의 및 출강 요청도 언제든 환영합니다.
+      </p>
     </section>
   );
 }

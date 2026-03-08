@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Serif_KR, Noto_Sans_KR, Gowun_Dodum, Nanum_Myeongjo } from "next/font/google";
-import GoogleAnalyticsWrapper from "../components/GoogleAnalyticsWrapper";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
+import { Footer } from "../components/layout/Footer";
 import { AnalyticsSpeedInsights } from "../components/AnalyticsSpeedInsights";
 
 const notoSerif = Noto_Serif_KR({
@@ -26,9 +26,6 @@ const gowunDodum = Gowun_Dodum({
   weight: ["400"],
   variable: "--font-gowun-dodum",
   display: "swap",
-  // preload: false — this font is only used inside the Quill editor / blog
-  // viewer, not on public pages. Skipping the <link rel="preload"> removes
-  // a bandwidth competitor that delayed the hero-image LCP fetch.
   preload: false,
 });
 
@@ -37,11 +34,10 @@ const nanumMyeongjo = Nanum_Myeongjo({
   weight: ["400", "700"],
   variable: "--font-nanum-myeongjo",
   display: "swap",
-  // preload: false — same rationale as gowunDodum above.
   preload: false,
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gimpogugak.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hama-vocal.com";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -49,93 +45,62 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
-// 3. SEO 메타데이터
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "김포국악원 | 무형문화재 이수자 직강 (Gimpo Gugak Center)",
-    template: "%s | 김포국악원",
+    default: "하마 보컬 스튜디오 | 박준열 성악가",
+    template: "%s | 하마 보컬 스튜디오",
   },
   description:
-    "황해도무형문화재 제3호 놀량사거리 이수자 원장과 한양대 성악 전공 부원장이 이끄는 김포 대표 국악 교육원. 민요, 장구, 입시, 체험학습 운영.",
+    "삼척 하마 보컬 스튜디오. 한양대 성악과 출신, 황해도무형문화재 제3호 놀량사거리 전수자 박준열의 프리미엄 보컬 레슨.",
   keywords: [
-    "김포국악원",
-    "서도민요",
-    "국악학원",
-    "민요배우기",
-    "무형문화재",
-    "김포 국악",
-    "경기민요",
-    "김포 장구",
-    "김포 체험",
-    "김포민요",
-    "김포장구",
-    "전문 국악원",
-    "김포 학원",
-    "김포학원",
+    "하마 보컬 스튜디오",
+    "삼척 성악",
+    "박준열",
+    "보컬 레슨",
+    "삼척 음악학원",
+    "성악 레슨",
+    "삼척시립합창단",
   ],
-  verification: {
-    other: {
-      "naver-site-verification": "6c40f80aacb11e514a73265d9c91cd94ad53424b",
-    },
-  },
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    siteName: "김포국악원",
-    title: "김포국악원 | 무형문화재 이수자 직강",
-    description: "우리 소리의 깊이를 더하는 곳, 김포국악원입니다.",
+    siteName: "하마 보컬 스튜디오",
+    title: "하마 보컬 스튜디오 | 박준열 성악가",
+    description: "프리미엄 보컬 레슨, 삼척 하마 보컬 스튜디오.",
     url: siteUrl,
     images: [
       {
         url: "/logo.png",
         width: 800,
         height: 400,
-        alt: "김포국악원 전경",
+        alt: "하마 보컬 스튜디오",
       },
     ],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: siteUrl },
-  other: {
-    "geo.region": "KR-41",
-    "ICBM": "37.6153, 126.7159",
-  },
 };
 
-// 4. GEO + SEO 데이터 (JSON-LD)
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  "name": "김포국악원",
-  "alternateName": ["Gimpo Gugak Center", "김포 국악원"],
+  "@type": "MusicGroup",
+  "name": "하마 보컬 스튜디오",
   "url": siteUrl,
-  "description": "황해도무형문화재 제3호 놀량사거리 이수자 원장과 한양대 성악 전공 부원장이 함께 운영하는 김포 국악 교육 전문 기관.",
+  "description": "삼척 하마 보컬 스튜디오. 박준열 성악가의 프리미엄 보컬 레슨 스튜디오.",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "모담공원로 170-14",
-    "addressLocality": "김포시",
-    "addressRegion": "경기도",
-    "postalCode": "10076",
+    "addressLocality": "삼척시",
+    "addressRegion": "강원도",
     "addressCountry": "KR"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 37.6153,
-    "longitude": 126.7159
   },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+82-10-5948-1843",
+    "telephone": "+82-10-2239-1840",
     "contactType": "customer service",
     "areaServed": "KR",
     "availableLanguage": "Korean"
   },
-  "sameAs": [
-    "https://blog.naver.com/gimpogugak",
-    "https://instagram.com/seodo_music"
-  ],
-  "knowsAbout": ["서도민요", "경기민요", "놀량사거리", "장구", "국악교육", "진로체험"]
 };
 
 export default function RootLayout({
@@ -150,28 +115,12 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "김포국악원",
-              alternateName: "Gimpo Gugak Center",
-              url: siteUrl,
-              description: "경기 김포시 국악 교육원. 황해도무형문화재 제3호 놀량사거리 이수자 직강.",
-              inLanguage: "ko-KR",
-              publisher: { "@type": "Organization", name: "김포국악원", url: siteUrl },
-            }),
-          }}
-        />
         <Navbar />
         <main className="md:ml-[120px] min-h-screen">
           {children}
         </main>
-        
+        <Footer />
         <AnalyticsSpeedInsights />
-        <GoogleAnalyticsWrapper />
       </body>
     </html>
   );

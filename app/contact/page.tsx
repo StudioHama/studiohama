@@ -1,127 +1,51 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "문의 및 오시는 길 | 김포국악원 (Contact)",
-  description:
-    "김포국악원 위치: 경기도 김포시 모담공원로 170-14. 상담 문의: 010-5948-1843.",
+  title: "문의 | 하마 보컬 스튜디오",
+  description: "하마 보컬 스튜디오 레슨 문의. 010-2239-1840",
 };
 
 export default function ContactPage() {
-  const addressQuery = "경기도 김포시 모담공원로 170-14";
-  const encodedAddress = encodeURIComponent(addressQuery);
-  
-  // 링크 모음 (수정됨)
-  const naverMapLink = `https://map.naver.com/v5/search/${encodedAddress}`;
-  // 👇 여기가 수정되었습니다 (구글 공식 검색 링크)
-  const googleMapLink = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-  const kakaoMapLink = `https://map.kakao.com/link/search/${encodedAddress}`;
-
   return (
     <section className="mx-auto max-w-2xl px-6 py-12 pb-24">
-      {/* 헤더 */}
       <div className="mb-16">
         <h1 className="font-serif text-3xl font-bold tracking-tight text-[#111] mb-4">
-          문의 및 오시는 길
+          문의
         </h1>
         <p className="text-[#666] leading-relaxed">
-          국악의 즐거움이 시작되는 곳.
-          <br />
-          방문 상담은 수업 중일 수 있으니 미리 예약 부탁드립니다.
+          레슨 및 공연 섭외 문의는 언제든지 연락 주세요.
         </p>
       </div>
 
-      {/* 1. 약도 이미지 (메인: 네이버 지도 연결) */}
-      <div className="mb-12">
-        <a 
-          href={naverMapLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative block w-full aspect-video sm:h-[400px] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 shadow-sm group"
-        >
-          <Image
-            src="/gimpogugak_map.png"
-            alt="김포국악원 약도"
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 800px"
-            priority
-          />
-          
-          {/* 상단 안내 배지 */}
-          <div className="absolute top-4 left-0 w-full flex justify-center z-10 px-4">
-            <span className="bg-black/70 backdrop-blur-sm text-white text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
-              👆 사진을 누르면 <span className="text-[#03C75A] font-bold">네이버 지도</span>로 연결됩니다
-            </span>
-          </div>
-
-          {/* 호버 효과 */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
-        </a>
-
-        {/* 2. 추가 지도 버튼 (구글 vs 카카오) */}
-        <div className="flex gap-3 mt-4">
-          <a
-            href={googleMapLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 py-3 text-center text-sm font-bold text-[#4285F4] bg-white border border-[#4285F4] rounded-lg hover:bg-[#4285F4] hover:text-white transition-colors shadow-sm"
-          >
-            Google 지도로 보기
-          </a>
-          <a
-            href={kakaoMapLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 py-3 text-center text-sm font-bold text-[#371D1E] bg-[#FAE100] rounded-lg hover:bg-[#ebd300] transition-colors shadow-sm"
-          >
-            카카오맵으로 보기
-          </a>
-        </div>
-      </div>
-
-      {/* 3. 정보 그리드 */}
       <div className="grid gap-8 sm:grid-cols-2">
         <div className="space-y-8">
-          <InfoItem label="Address">
-            경기도 김포시 모담공원로 170-14
-            <br />
-            김포국악원
-          </InfoItem>
-
           <InfoItem label="Contact">
             <a
-              href="tel:01059481843"
+              href="tel:01022391840"
               className="text-[#111] hover:underline font-bold text-lg block mb-1"
             >
-              010-5948-1843
+              010-2239-1840
             </a>
             <a
-              href="mailto:gimpogugak@gmail.com"
+              href="mailto:amina7@naver.com"
               className="text-[#666] hover:text-[#111] text-sm"
             >
-              gimpogugak@gmail.com
+              amina7@naver.com
             </a>
+          </InfoItem>
+
+          <InfoItem label="Location">
+            강원도 삼척시
           </InfoItem>
         </div>
 
         <div className="space-y-8">
-          <InfoItem label="Operating Hours">
+          <InfoItem label="Lessons">
             <div className="space-y-1 text-[#666] text-sm leading-relaxed">
-              <p>
-                <span className="font-semibold text-[#111]">평일, 토요일:</span> 10:00 ~ 19:00
-              </p>
-              <p>
-                <span className="font-semibold text-[#111]">일요일:</span> 휴무 (공연 시 변동)
-              </p>
+              <p>성악 / 보컬 / 민요</p>
+              <p>개인 및 단체 레슨 가능</p>
+              <p>시간 조율 가능 (사전 문의 필수)</p>
             </div>
-          </InfoItem>
-
-          <InfoItem label="Bank Account">
-            <p className="text-[#666] mb-1 text-sm">수강료 입금 계좌</p>
-            <p className="font-medium text-[#111] leading-relaxed">
-              신한은행 110-603-003236 (김포국악원)
-            </p>
           </InfoItem>
         </div>
       </div>

@@ -1,107 +1,69 @@
 import Link from "next/link";
-import Image from "next/image";
-import { Phone, MessageCircle, MapPin } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 
 const FOOTER_LINKS = [
-  { href: "/about", label: "국악원 소개" },
-  { href: "/teachers", label: "강사진" },
+  { href: "/intro", label: "소개" },
+  { href: "/blog", label: "블로그" },
   { href: "/classes", label: "수업 안내" },
-  { href: "/notices", label: "공지사항" },
-  { href: "/gallery", label: "갤러리" },
-  { href: "/booking", label: "공연·섭외" },
+  { href: "/activities", label: "활동" },
   { href: "/contact", label: "문의하기" },
-  { href: "/privacy", label: "개인정보처리방침" },
 ];
 
 export function Footer() {
-  const phone = process.env.NEXT_PUBLIC_PHONE ?? "031-XXX-XXXX";
-  const kakaoUrl = process.env.NEXT_PUBLIC_KAKAO_URL ?? "#";
-  const address = process.env.NEXT_PUBLIC_ADDRESS ?? "경기 김포시";
+  const phone = process.env.NEXT_PUBLIC_PHONE ?? "010-2239-1840";
+  const address = process.env.NEXT_PUBLIC_ADDRESS ?? "강원도 삼척시";
 
   return (
-    <footer className="bg-ink text-paper border-t border-ink/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* 브랜드 & 한 줄 소개 */}
+    <footer className="bg-[#111] text-white border-t border-white/10">
+      <div className="max-w-2xl mx-auto px-6 py-10 md:ml-[120px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {/* 브랜드 */}
           <div>
-            <Link
-              href="/"
-              className="font-serif text-xl text-paper font-semibold"
-            >
-              김포국악원
+            <Link href="/" className="font-serif text-lg font-semibold text-white">
+              하마 보컬 스튜디오
             </Link>
-            <p className="mt-2 text-sm text-paper/80 leading-relaxed">
-              김포 대표 국악 교육, 전통을 제대로 배우는 곳
+            <p className="mt-2 text-sm text-white/60 leading-relaxed">
+              삼척 프리미엄 성악 스튜디오
+              <br />
+              박준열 성악가의 1:1 맞춤 레슨
             </p>
           </div>
 
-          {/* 링크 */}
-          <div>
-            <h3 className="text-sm font-semibold text-paper/90 uppercase tracking-wider mb-4">
-              바로가기
-            </h3>
-            <ul className="space-y-2">
+          {/* 링크 + 연락처 */}
+          <div className="flex flex-col gap-6">
+            <ul className="flex flex-wrap gap-x-4 gap-y-1">
               {FOOTER_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-paper/80 hover:text-paper transition-colors"
+                    className="text-sm text-white/60 hover:text-white transition-colors"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* 연락처 & 주소 */}
-          <div>
-            <h3 className="text-sm font-semibold text-paper/90 uppercase tracking-wider mb-4">
-              연락처
-            </h3>
-            <ul className="space-y-3 text-sm text-paper/80">
+            <ul className="space-y-2 text-sm text-white/60">
               <li>
                 <a
                   href={`tel:${phone.replace(/-/g, "")}`}
-                  className="inline-flex items-center gap-2 hover:text-paper transition-colors"
+                  className="inline-flex items-center gap-2 hover:text-white transition-colors"
                 >
-                  <Phone className="w-4 h-4 shrink-0" />
+                  <Phone className="w-3.5 h-3.5 shrink-0" />
                   {phone}
                 </a>
               </li>
-              <li>
-                <a
-                  href={kakaoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 hover:text-paper transition-colors"
-                >
-                  <MessageCircle className="w-4 h-4 shrink-0" />
-                  카카오톡 문의
-                </a>
-              </li>
               <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 shrink-0 mt-0.5" />
+                <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                 <span>{address}</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <hr className="hanji-line my-8 border-paper/20" />
-
-        <div className="flex flex-col items-center justify-center gap-3 text-sm text-paper/60">
-          <Link href="/" className="shrink-0">
-            <Image
-              src="/logo-white.png"
-              alt="김포국악원 GIMPO GUGAK CENTER"
-              width={120}
-              height={48}
-              className="h-10 w-auto object-contain opacity-90"
-            />
-          </Link>
-          <span>© {new Date().getFullYear()} 김포국악원. All rights reserved.</span>
-        </div>
+        <p className="mt-8 pt-6 border-t border-white/10 text-xs text-white/40 text-center">
+          © {new Date().getFullYear()} 하마 보컬 스튜디오. All rights reserved.
+        </p>
       </div>
     </footer>
   );

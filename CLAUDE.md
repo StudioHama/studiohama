@@ -1,140 +1,193 @@
-# CLAUDE.md
+# CLAUDE.md — Samcheok Vocal Studio (삼척 성악 스튜디오)
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file is the **core guideline and memory** for this project.
+All AI sessions MUST read this file before making any changes.
 
 ---
 
-## 1. Project Overview & Tech Stack
+## 1. Project Overview
 
-- **Framework:** Next.js 16 (App Router)
-- **Database & Auth:** Supabase (PostgreSQL, RLS, Auth)
+- **Project Name:** Samcheok Vocal Studio (삼척 성악 스튜디오)
+- **Engine Base:** Gimpo Gugak Center (김포국악원) codebase — adapted & stripped down
+- **Framework:** Next.js (App Router)
+- **Database:** Supabase (PostgreSQL) — used **only for Blog posts**
 - **Styling:** Tailwind CSS
-- **Domain:** Gimpo Gugak Center (김포국악원) — Public Website & Admin Dashboard
+- **Purpose:** Public website + hidden admin dashboard for a premium vocal studio in Samcheok
 
 **Key Directories:**
-- `app/` — App Router pages (blog, admin, intro, etc.)
-- `components/` — Reusable UI (PostModal, Navbar, etc.)
+- `app/` — App Router pages (intro, blog, admin, etc.)
+- `components/` — Reusable UI (Navbar, etc.)
 - `lib/` — Utilities (supabase, fonts, date-utils, changelog)
 
 ---
 
-## 2. Strict Performance & SEO Rules (CRITICAL)
+## 2. Navigation (STRICT — 5 Menus Only)
 
-These rules MUST be followed to maintain PageSpeed scores and avoid regressions.
+The public navigation MUST have **exactly** these 5 menus in this order:
+
+| # | Label | Route |
+|---|-------|-------|
+| 1 | 소개 | `/intro` |
+| 2 | 블로그 | `/blog` |
+| 3 | 수업 | `/classes` |
+| 4 | 활동 | `/activities` |
+| 5 | 문의 | `/contact` |
+
+**RULES:**
+- There is **NO** login, logout, or auth-related UI in the public Navbar.
+- No dropdown sub-menus.
+- No member-only menus.
+
+---
+
+## 3. No Public User Authentication
+
+- **All user login, registration, and user DB features have been COMPLETELY REMOVED.**
+- No `profiles` table, no Supabase Auth for users, no member-only routes.
+- Supabase is used **only** for blog post storage (`posts` table).
+- The public site is fully anonymous.
+
+---
+
+## 4. Introduction Page (`/intro`)
+
+- Clicking "소개" in the nav goes directly to `/intro`.
+- `/intro` renders the **single-page profile of 박준열 (Park Jun-yeol)**.
+- **No sub-menus, no sub-pages, no director page, no media page.**
+- Content: bio, education, career, certifications, performance history.
+- The `ProfilePhoto` component lives at `app/Park-Jun-Yeol/ProfilePhoto.tsx`.
+
+---
+
+## 5. Admin Authentication
+
+### Mechanism
+- **Type:** Password-based, stateless HTTP-only cookie
+- **No Supabase Auth** — completely independent of Supabase
+- Required env vars in `.env.local`:
+  - `ADMIN_PASSWORD` — the secret admin password
+  - `ADMIN_SECRET` — a random string used as the session cookie value
+
+### Flow
+1. User visits `/admin` → middleware checks `admin_session` cookie
+2. Cookie missing or invalid → redirect to `/admin/login`
+3. `/admin/login` shows a password form
+4. Form POSTs to `/api/admin-login`
+5. Server compares password to `ADMIN_PASSWORD`
+6. Match → set HTTP-only cookie `admin_session=<ADMIN_SECRET>` → redirect `/admin`
+7. Logout → clears the cookie → redirect `/`
+
+### Protected Routes
+- **Admin-only** (cookie required): `/admin/*`
+- **Public** (no cookie needed): `/admin/login`
+
+---
+
+## 6. Blog System
+
+### Public Blog (`/blog`)
+- **Read-only** for all visitors.
+- Simplified UI: Title (left) | Dotted border | Date `YY.MM.DD` (right).
+- No thumbnails, no content snippets.
+- Uses SSG/ISR: `export const revalidate = 60`
+
+### Admin Blog Management (`/admin/posts`)
+- Full CRUD via React-Quill editor.
+- Posts stored in Supabase `posts` table.
+- Only accessible with valid `admin_session` cookie.
+
+---
+
+## 7. Strict Performance & SEO Rules (CRITICAL)
 
 ### Fonts
 - **NEVER** use `@import` for heavy web fonts in `globals.css`.
 - **ONLY** use `next/font/google` for global fonts (Noto Sans KR, Noto Serif KR).
-- Heavy fonts (Gowun Dodum, Nanum Myeongjo, etc.) live in `lib/fonts.ts` and are imported **only** where needed (e.g., PostModal, blog detail viewer).
+- Heavy fonts (Gowun Dodum, Nanum Myeongjo) — imported **only** where needed.
 
 ### React-Quill & Lazy Loading
 - `React-Quill` and `quill.snow.css` **MUST** be lazy-loaded via `next/dynamic` with `ssr: false`.
-- Import Quill CSS **ONLY** in:
-  - `components/PostModal.tsx`
-  - `app/blog/[id]/page.tsx`
-- **Global import** of `quill.snow.css` in `layout.tsx` or `globals.css` is **strictly forbidden** (causes render-blocking).
+- **Global import** of `quill.snow.css` in `layout.tsx` or `globals.css` is **strictly forbidden**.
 
 ### Rendering & Caching
-- Public list pages (Blog, Activities) use **SSG/ISR**:
-  - `export const revalidate = 60`
-  - `export const dynamic = "force-static"` (for blog list)
-- Do **NOT** fetch dynamically on the client for public list data unless necessary (e.g., auth-gated notices).
+- Public blog list: `export const revalidate = 60` + `export const dynamic = "force-static"`
+- Admin pages: `export const dynamic = "force-dynamic"`
 
-### LCP (Largest Contentful Paint)
-- The main hero image **MUST** use the `priority` attribute:
-  ```tsx
-  <Image src="/main_image.webp" alt="..." priority sizes="100vw" className="object-cover" />
-  ```
+### LCP
+- Main hero image **MUST** use the `priority` attribute.
 
 ### Viewport & Accessibility
-- Do **NOT** set `userScalable: false` or `maximumScale: 1` in viewport config (breaks Accessibility score).
+- Do **NOT** set `userScalable: false` or `maximumScale: 1`.
 
 ### CSS Inlining
-- `next.config.ts` must have `experimental.inlineCss: true` to reduce render-blocking CSS.
+- `next.config.ts` must have `experimental.inlineCss: true`.
 
 ---
 
-## 3. Editor (React-Quill) Conventions
+## 8. Editor (React-Quill) Conventions
 
 ### Blog Detail Viewer
-- Tailwind's `prose` class is **strictly banned** in the blog detail content wrapper — it collapses line breaks.
-- Use **only** Quill's native viewer classes:
+- Tailwind `prose` class is **banned** — use Quill native viewer classes:
   ```tsx
   <div className="ql-snow">
-    <div className="ql-editor" dangerouslySetInnerHTML={{ __html: post.content }} style={{ padding: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }} />
+    <div className="ql-editor" dangerouslySetInnerHTML={{ __html: post.content }}
+      style={{ padding: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }} />
   </div>
   ```
 
-### Line Breaks & Paragraphs
-- Custom `!important` CSS overrides in `globals.css` force Quill line breaks and paragraph margins.
-- Do **NOT** remove or weaken these overrides; Tailwind preflight would otherwise collapse empty paragraphs.
-
 ### Font Sizes
-- Font sizes use **explicit numerical pixel values** (10px, 12px, 14px, 16px, 18px, 20px, 24px, 28px, 32px, 36px) via inline styles.
-- The SizeStyle attributor (`attributors/style/size`) is registered with a whitelist; default classes (small, large, huge) are not used.
+- Use explicit pixel values (10px–36px) via inline styles.
+- SizeStyle attributor registered with whitelist.
 
 ### Custom Fonts in Editor
-- Custom fonts (Gowun Dodum, Nanum Myeongjo) are scoped **locally** using CSS variables.
-- Apply font variables only to the editor/viewer wrapper divs, not globally.
-- Font whitelist: `['gowunDodum', 'nanumMyeongjo']` — defined in `PostModal.tsx` and mapped in `globals.css`.
+- Fonts scoped locally; whitelist: `['gowunDodum', 'nanumMyeongjo']`
 
 ---
 
-## 4. Recent Business Logic States
+## 9. Database (Supabase)
 
-### Blog List
-- **Simplified UI:** Text and date only, matching the Press Release (언론 보도) style.
-- Structure: Title (left) | Dotted border (middle) | Date `YY.MM.DD` (right).
-- No thumbnails, no content snippets. Whole row is a clickable `Link`.
+Only the `posts` table is used. No user-related tables.
 
-### Class Management (수업관리)
-- **Progress (진도) logs:** Must display the date of each progress entry (e.g., `YY.MM.DD` or `YYYY년 MM월 DD일`).
-- **Cancel Class (수업취소):** When "↩️ 취소" (undo) is clicked, the Calendar must update immediately — `loadLessonHistory()` is called and `selectedDateLessons` is synced.
-- **Calendar Delete Button:** The Daily Schedule modal includes a "삭제" (Delete) button per event. On confirm, the record is deleted from `lesson_history`, `lessons.current_session` is decremented, and the calendar is refreshed.
+- `posts` — Blog post records (title, content, slug, category, published_at, views)
 
-### Database
-- `lessons` — Per-student lesson records (user_id, category, current_session, is_active, payment_date).
-- `lesson_history` — Attendance/session records (lesson_id, session_number, completed_date).
-- RLS: Admins manage all; users view own data.
+**Supabase Clients:**
+- `lib/supabase/client.ts` — Browser (Client Components)
+- `lib/supabase/server.ts` — Server (Server Components, Route Handlers)
 
 ---
 
-## 5. Commands & Environment
+## 10. Commands & Environment
 
 ```bash
-npm run dev       # 개발 서버 (Turbopack)
-npm run build     # 프로덕션 빌드
-npm run start     # 프로덕션 서버
-npm run lint      # ESLint 실행
-ANALYZE=true npm run build  # 번들 분석
+npm run dev       # Development server (Turbopack)
+npm run build     # Production build
+npm run start     # Production server
+npm run lint      # ESLint
+ANALYZE=true npm run build  # Bundle analysis
 ```
 
 **Environment variables** (`.env.local`):
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` — for admin blog writes
+- `ADMIN_PASSWORD` — admin login password
+- `ADMIN_SECRET` — random token used as session cookie value
 
 ---
 
-## 6. Auth & Routes
-
-- **Public:** `/`, `/intro/*`, `/blog/*`, `/classes`, `/activities`, `/contact`, `/login`
-- **Member-only** (`status = 'active'`): `/notices`, `/gallery`, `/materials`, `/my-lessons`
-- **Admin-only** (`role = 'admin'` + `status = 'active'`): `/admin/*`
-- `pending` users → `/waiting`
-
----
-
-## 7. Supabase Clients
-
-- `lib/supabase/client.ts` — Browser (Client Components)
-- `lib/supabase/server.ts` — Server (Server Components, Route Handlers)
-
-Use `server.ts` for Server Component DB queries.
-
----
-
-## 8. Version & Changelog
+## 11. Version & Changelog
 
 - Version and changelog live in `lib/changelog.ts`.
 - All `changes` entries must be in **Korean**.
 - Increment version for each significant change.
+- Current version: **v1.02**
+
+---
+
+## 12. Changelog / Version History
+
+| Version | Date | Summary |
+|---------|------|---------|
+| v1.02 | 2026-03-08 | 코드베이스 대규모 정리: 김포국악원 잔여 라우트·컴포넌트·공개 파일 완전 제거, 블로그 카테고리 스튜디오 중심으로 교체, 메타데이터 하마 보컬 스튜디오로 전면 교체 |
+| v1.01 | 2026-03-08 | 삼척 성악 스튜디오 초기 셋업: 5개 공개 메뉴 정리, 사용자 인증 완전 제거, 소개 페이지 박준열 단독 프로필로 전환, 관리자 인증을 패스워드+쿠키 방식으로 교체 |
+| v1.00 | 2026-03-08 | 김포국악원 엔진 기반으로 삼척 성악 스튜디오 프로젝트 시작 |

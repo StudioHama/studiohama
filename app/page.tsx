@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { HomeBadges } from "@/components/home/HomeBadges";
-import { HomeConnect } from "@/components/home/HomeConnect";
 
-// 👇 외부 이미지 주소
-const HERO_IMAGE =
-  "/main_image.webp";
+const HERO_IMAGE = "/main_image.webp";
 
 export const metadata: Metadata = {
-  title: "김포국악원 | 한국의 전통, 대한의 소리",
+  title: "하마 보컬 스튜디오 | 박준열 성악가",
   description:
-    "황해도무형문화재 제3호 놀량사거리 이수자 원장과 성악 전공 부원장이 함께하는 김포 국악 교육원. 민요, 장구, 진로체험, 김포신문 칼럼 연재.",
+    "삼척 하마 보컬 스튜디오. 한양대 성악과 출신, 황해도무형문화재 제3호 놀량사거리 전수자 박준열의 프리미엄 보컬 레슨.",
   openGraph: {
-    title: "김포국악원 | 한국의 전통, 대한의 소리",
-    description: "경기 김포시 국악 교육. 무형문화재 이수자 직강, 교육부 진로체험 인증기관.",
+    title: "하마 보컬 스튜디오 | 박준열 성악가",
+    description: "성악과 민요를 자유롭게 넘나드는 음악 교육자, 박준열입니다.",
     type: "website",
   },
 };
@@ -23,90 +18,67 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      {/*
-        Force-inject a <link rel="preload"> for the LCP image into <head>.
-        Next.js App Router hoists bare <link> elements from Server Components
-        to the document head automatically, so this fires as early as any
-        other resource hint — before React even begins hydrating.
-        Belt-and-suspenders on top of the `priority` / fetchPriority props
-        on the <Image> below.
-      */}
-      {/* eslint-disable-next-line @next/next/no-head-element */}
-      <link
-        rel="preload"
-        as="image"
-        href={HERO_IMAGE}
-        fetchPriority="high"
-      />
+      <link rel="preload" as="image" href={HERO_IMAGE} fetchPriority="high" />
       <article className="max-w-2xl mx-auto px-6 py-12">
-      <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-[#111] tracking-tight">
-        한국의 전통, 대한의 소리
-      </h1>
+        <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-[#111] tracking-tight">
+          소리로 만나는 새로운 세계
+        </h1>
 
-      <figure className="mt-8 rounded-lg overflow-hidden bg-gray-100"> 
-        {/* 👆 bg-gray-100 추가: 이미지 로딩될 때 아주 잠깐 회색 배경 보여줘서 시각적 안정감 줌 */}
-        <Image
-          src={HERO_IMAGE}
-          alt="한옥 처마와 자연, 김포국악원"
-          priority
-          fetchPriority="high" // 👈 아주 잘하셨습니다! (가장 중요)
-          width={1000}
-          height={563}
-          className="w-full aspect-video object-cover"
-          // 👇 sizes 속성을 조금 더 현실적으로 조정 (모바일/PC 구분)
-          sizes="(max-width: 768px) 100vw, 1200px"
-        />
-      </figure>
+        <figure className="mt-8 rounded-lg overflow-hidden bg-gray-100">
+          <Image
+            src={HERO_IMAGE}
+            alt="하마 보컬 스튜디오"
+            priority
+            fetchPriority="high"
+            width={1000}
+            height={563}
+            className="w-full aspect-video object-cover"
+            sizes="(max-width: 768px) 100vw, 1200px"
+          />
+        </figure>
 
-      <div className="mt-10 space-y-6 font-sans text-[#111] leading-relaxed">
-        <p>
-          &quot;국악은 어렵고 낯설다&quot;는 편견, 우리도 잘 압니다.
-          하지만 실제로 만나보면 국악만큼 우리 목소리와 마음에 자연스럽게 스며드는 음악도 없습니다.
-        </p>
-        <p>
-          김포국악원은{" "}
-          <Link href="/Song-Ri-Gyel" className="text-[#111] underline hover:no-underline font-medium">
-            황해도무형문화재 제3호 놀량사거리 이수자이신 원장님
-          </Link>
-          과{" "}
-          <Link href="/Park-Jun-Yeol" className="text-[#111] underline hover:no-underline font-medium">
-            성악을 전공한 부원장님
-          </Link>
-          이 함께 운영하는 공간입니다.
-          두 분의 전문성이 만나 전통의 깊이와 현대 음악교육의 체계가 조화를 이루고 있습니다.
-        </p>
-        <p>
-          저희 국악원은 교육부 인증 진로체험기관으로 선정되어 청소년들에게 살아있는 진로교육을 제공하고 있으며,
-          다양한 문화예술 지원사업을 통해 지역사회와 함께 성장하고 있습니다.{" "}
-          크라운해태 전국대회, 서도소리경연대회 등에서 원생들이 꾸준히 수상하며 실력을 인정받고 있고,
-          매년 정기공연을 통해 배움의 기쁨을 무대 위에서 나누고 있습니다.
-        </p>
-        <p>
-          특히 부원장님은 김포신문에 &apos;
-          <a
-            href="https://www.igimpo.com/news/articleView.html?idxno=90054"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#111] underline hover:no-underline"
-          >
-            두 개의 목소리가 만나는 음악 시간
-          </a>
-          &apos;이라는 칼럼을 연재하며, 노래를 어려워하는 청소년들이 성악과 민요를 자유롭게 넘나들며 자신만의 목소리를 찾아가는 과정을 함께하고 있습니다.
-        </p>
-        <p>
-          민요, 장구, 단체반, 대취타 체험까지.
-          나이와 실력에 관계없이 누구나 편안하게 시작할 수 있습니다.
-          공연과 섭외 문의도 언제든 환영합니다.
-        </p>
-        <p className="font-medium text-lg pt-4">
-          전통을 제대로, 그리고 따뜻하게 배우고 싶으신가요?
-          <br className="sm:hidden" /> 김포국악원에서 시작해보세요.
-        </p>
-      </div>
+        <div className="mt-10 space-y-6 font-sans text-[#111] leading-relaxed">
+          <p>
+            성악과 민요, 두 개의 언어로 노래하는{" "}
+            <Link href="/intro" className="text-[#111] underline hover:no-underline font-medium">
+              박준열
+            </Link>
+            의 스튜디오에 오신 것을 환영합니다.
+          </p>
+          <p>
+            한양대학교 성악과를 졸업하고, 황해도무형문화재 제3호 놀량사거리 전수자로서
+            오페라와 민요의 경계를 자유롭게 넘나들며 활동하고 있습니다.
+            삼척시립합창단 단원이자 김포오페라단 단장으로서 무대 위의 경험을 레슨에 그대로 담아냅니다.
+          </p>
+          <p>
+            목소리는 누구에게나 있습니다. 그 소리를 제대로 꺼내는 방법을 함께 찾아드립니다.
+          </p>
+          <p className="font-medium text-lg pt-4">
+            레슨 문의는 언제든 환영합니다.
+          </p>
+        </div>
 
-      <Suspense fallback={null}><HomeBadges /></Suspense>
-      <Suspense fallback={null}><HomeConnect /></Suspense>
-    </article>
+        <div className="mt-12 pt-8 border-t border-[#111]/10">
+          <p className="text-xs text-gray-500 uppercase tracking-wider mb-4">Quick Links</p>
+          <ul className="flex flex-col gap-3">
+            <li>
+              <Link href="/intro" className="text-sm text-gray-500 hover:text-black transition-colors">
+                소개 →
+              </Link>
+            </li>
+            <li>
+              <Link href="/classes" className="text-sm text-gray-500 hover:text-black transition-colors">
+                수업 안내 →
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="text-sm text-gray-500 hover:text-black transition-colors">
+                문의하기 →
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </article>
     </>
   );
 }
