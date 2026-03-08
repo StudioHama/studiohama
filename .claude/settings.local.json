@@ -17,7 +17,12 @@
       "Bash(npx next:*)",
       "Bash(npm i:*)",
       "Bash(cat:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(supabase:*)",
+      "Bash(psql:*)",
+      "Bash(npm outdated:*)",
+      "Bash(ls:*)",
+      "Bash(npm uninstall:*)"
     ]
   }
 }

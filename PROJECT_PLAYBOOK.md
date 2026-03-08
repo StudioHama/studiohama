@@ -1,302 +1,504 @@
-# 김포국악원 프로젝트 플레이북 (PROJECT_PLAYBOOK.md)
+# PROJECT PLAYBOOK — 삼척 성악 스튜디오 (Samcheok Vocal Studio)
 
-> v1.01 ~ v2.00 버전의 전체 히스토리와 핵심 구현 노하우를 담은 종합 매뉴얼
-
----
-
-## 1. 프로젝트 개요 및 기술 스택 (Tech Stack)
-
-### 1.1 프로젝트 개요
-
-| 항목 | 내용 |
-|------|------|
-| **프로젝트명** | 김포국악원 (Gimpo Gugak Center) |
-| **도메인** | gimpogugak.com |
-| **성격** | 공개 웹사이트 + 관리자 대시보드 |
-| **주요 기능** | 블로그(소식), 수업관리(LMS), 회원관리, 공지/갤러리/자료실 |
-
-### 1.2 기술 스택
-
-| 분류 | 기술 |
-|------|------|
-| **프레임워크** | Next.js 16 (App Router) |
-| **데이터베이스** | Supabase (PostgreSQL, RLS, Auth) |
-| **스타일링** | Tailwind CSS |
-| **에디터** | React-Quill (react-quill-new) |
-| **폰트** | Pretendard (CDN 전역 적용) / 포인트 폰트: 고운돋움, 나눔명조 (에디터 전용) |
-| **배포** | Vercel |
-| **분석** | Google Analytics 4, Vercel Analytics, Vercel Speed Insights |
-
-### 1.3 핵심 디렉터리 구조
-
-`app/`          : App Router 페이지 (blog, admin, intro, contact 등)
-`components/`   : 재사용 UI (PostModal, PostEditor, Navbar 등)
-`lib/`          : 유틸리티 (supabase, fonts, changelog, upload-image, date-utils)
+> Last updated: 2026-03-09
+> Current version: **v1.03**
 
 ---
 
-## 2. 버전별 핵심 업데이트 히스토리 (v1.01 ~ v2.00)
+## Table of Contents
 
-### v1.0.0 ~ v1.0.2 (초기 구축)
-
-| 버전 | 날짜 | 핵심 변경 |
-|------|------|-----------|
-| **1.0.0** | 2026-02-12 | 관리자 대시보드 초기화, 회원승인/회원관리/수업관리/공지사항 메뉴 구성 |
-| **1.0.1** | 2026-02-15 | 내 정보 페이지, 로그인 버그 수정(전화번호 조회, RLS), 버전 관리 및 업데이트 내역 시스템 |
-| **1.0.2** | 2026-02-16 | 수강료 입금 대기 명단 카카오톡 연동, 공통 메시지 모듈(lib/messages.ts) |
-
-### v1.08 ~ v1.18 (수업·소개·언론보도)
-
-| 버전 | 날짜 | 핵심 변경 |
-|------|------|-----------|
-| **1.08** | 2026-02-17 | 수강료 안내 발송 방식을 카카오톡 → 일반 문자(SMS)로 변경 |
-| **1.09~1.13** | 2026-02-18 | 모바일 헤더 레이아웃, 드롭다운 메뉴, Z-Index·클릭 버그 수정 |
-| **1.14~1.16** | 2026-02-18 | 소개 메뉴 개편(원장/부원장/언론), 프로필 이미지 카드 형식 |
-| **1.17** | 2026-02-18 | 언론 보도 목록 페이지 생성 (도트 리더 디자인) |
-| **1.18** | 2026-02-18 | 언론 보도 목록에 김포문화재단 게시물 링크 추가 |
-
-### v1.23 ~ v1.35 (수업관리·블로그 기반)
-
-| 버전 | 날짜 | 핵심 변경 |
-|------|------|-----------|
-| **1.23** | 2026-02-18 | 수강생 카테고리 중복 선택, 수업 취소 캘린더 연동, 수강료 합계 표시, KST 타임존 버그 수정 |
-| **1.24** | 2026-02-18 | 캘린더 월 이동, 출석 데이터 연동 |
-| **1.25** | 2026-02-18 | 캘린더 날짜별 다중 수업 등록 |
-| **1.33** | 2026-02-19 | 블로그 GNB 승격, 라우팅 /blog 구조 개편 |
-| **1.34** | 2026-02-19 | 블로그 메뉴 최상단 배치 |
-| **1.35** | 2026-02-19 | 소식 관리 UX 개선: 게시글 작성/수정 팝업(모달) 통합 |
-
-### v1.36 ~ v1.50 (에디터·성능·SEO)
-
-| 버전 | 날짜 | 핵심 변경 |
-|------|------|-----------|
-| **1.36** | 2026-02-19 | 스마트 에디터: 글씨 크기 조절, 툴바 Sticky |
-| **1.37** | 2026-02-19 | 커스텀 웹 폰트 6종 에디터 적용 |
-| **1.38~1.40** | 2026-02-10 | 에디터↔뷰어 WYSIWYG 동기화, 줄바꿈 강제, 글자 크기 px 단위 |
-| **1.41** | 2026-02-10 | 블로그/활동 페이지 ISR 캐싱, font-display: swap |
-| **1.42** | 2026-02-10 | 성능 다이어트: 무거운 폰트 제거, 블로그 목록 텍스트(언론보도) 형식 경량화 |
-| **1.43** | 2026-02-10 | 줄바꿈 !important, Quill CSS 로딩 분리(LCP 차단 해소), 블로그 목록 SSG 강제 |
-| **1.45** | 2026-02-10 | 전역 폰트 최적화(next/font), 접근성 100점(viewport 수정), CSS 인라인화 |
-| **1.46** | 2026-02-10 | 에디터 폰트(고운돋움, 나눔명조) 국소적 적용 |
-| **1.47** | 2026-02-10 | 수업관리 진도 날짜 표시, 수업 취소 달력 동기화, 캘린더 삭제 버튼 |
-| **1.48** | 2026-02-10 | 에디터 툴바 한글화, 뷰어 줄바꿈/여백 Tailwind 충돌 해결 |
-| **1.49** | 2026-02-10 | 뷰어 문단 여백 축소, 한글 단어 잘림 방지 |
-| **1.50** | 2026-02-10 | 에디터 하이퍼링크 버튼 활성화, CTA 링크 CSS |
-
-### v1.51 ~ v1.70 (SEO·이미지·분석)
-
-| 버전 | 날짜 | 핵심 변경 |
-|------|------|-----------|
-| **1.51** | 2026-02-10 | sitemap.ts Supabase 동적 블로그 연동 |
-| **1.52** | 2026-02-10 | sitemap에 /blog 목록 페이지 추가 |
-| **1.53** | 2026-02-10 | 에디터 코드 블록 기능 |
-| **1.55** | 2026-02-10 | 블로그 하단 문의·지도 섹션 |
-| **1.56** | 2026-02-10 | 코드 블록 버튼 활성화, 지도 이미지 경로 수정 |
-| **1.57** | 2026-02-10 | HTML 소스 직접 수정(View Source) 기능 |
-| **1.59** | 2026-02-10 | 코드 블록 → 진짜 HTML 소스 편집 모드 |
-| **1.60** | 2026-02-20 | PageSpeed 최적화: LCP(sizes 1200px), CLS 방지, 폰트 다이어트 |
-| **1.61** | 2026-02-20 | 블로그 상세 SSG/ISR 적용 |
-| **1.62** | 2026-02-22 | 이미지 Base64 제거 → Supabase Storage 업로드(lib/upload-image.ts) |
-| **1.63** | 2026-02-22 | 예약 발행(published_at), 예약 배지 |
-| **1.64** | 2026-02-22 | 이미지 Alt Text(대체 텍스트) 지원 |
-| **1.65** | 2026-02-22 | 이미지 이중 삽입 버그 수정 |
-| **1.66** | 2026-02-23 | 소식 관리 검색·페이지네이션, Slug 입력 필드 |
-| **1.68** | 2026-02-23 | 블로그 URL 슬러그 우선: /blog/[slug] 또는 /blog/[id] |
-| **1.69** | 2026-02-24 | 블로그 조회수(views) 기능, 24시간 중복 방지 |
-| **1.70** | 2026-02-24 | Google Analytics 4 전역 연동 |
-
-### v1.71 ~ v1.90 (분석·수업관리·블로그 UX)
-
-| 버전 | 날짜 | 핵심 변경 |
-|------|------|-----------|
-| **1.71** | 2026-02-24 | 관리자 대시보드 GA 바로가기 버튼 |
-| **1.72** | 2026-02-24 | 관리자 기기 GA 추적 제외(localStorage is_admin_device) |
-| **1.73** | 2026-02-24 | 관리자 기기 조회수 제외 |
-| **1.74** | 2026-02-25 | 내 수업 '최근 수강 내역' 카드, lesson_history status |
-| **1.75** | 2026-02-25 | 출석 체크 시 user_id·status 저장 |
-| **1.76** | 2026-02-25 | Vercel ISR Writes 한도 대응: admin/lessons/my-lessons force-dynamic |
-| **1.77~1.80** | 2026-02-25 | 수업 기록 디버깅, lesson_history note 제거, 캘린더-목록 동기화 버그 수정 |
-| **1.81** | 2026-02-25 | 수업 갱신 시 파괴적 삭제 → 아카이브 방식(is_active=false) |
-| **1.82** | 2026-02-25 | 개인/단체 수업 투-트랙 UI (단체반 납부 확인) |
-| **1.83** | 2026-02-25 | 단체반 납부 등록, lesson_history status '결제 완료' |
-| **1.84** | 2026-02-25 | 단체반 '납부 이력' 모달 |
-| **1.85~1.86** | 2026-02-25 | 조회수 버그 수정(views 컬럼), 서버 API 라우트(/api/track-view) |
-| **1.87** | 2026-02-26 | 소식 관리 No. 열 추가 |
-| **1.88** | 2026-02-26 | 블로그 상세 UI: 공유 버튼 상단 이동, 이전글/목록/다음글 네비게이션 |
-| **1.89** | 2026-02-26 | 개인정보처리방침 페이지(/privacy) 신설 |
-| **1.90** | 2026-02-26 | 블로그 카테고리: 음악교실(파란), 국악원소식(초록) |
-
-### v1.91 ~ v2.00 (최종 정리·에디터 리뉴얼)
-
-| 버전 | 날짜 | 핵심 변경 |
-|------|------|-----------|
-| **1.91** | 2026-02-26 | 이전글/다음글 카테고리 격리, 예약글 방어 |
-| **1.92** | 2026-02-26 | 블로그 목록: 검색 바, 페이지네이션(10건), No. 열 |
-| **1.93~1.94** | 2026-02-26 | 푸터 개인정보처리방침 링크, CONNECT 섹션 링크 |
-| **1.95** | 2026-02-27 | 입력값 공백 정제(trim, slug 하이픈 치환), 기본 카테고리 음악교실 |
-| **1.96** | 2026-02-27 | Supabase Storage 이미지 일괄 최적화(sharp, 1200px, WebP q80) |
-| **1.97** | 2026-02-27 | EXIF 회전 보정, 본문 이미지 가운데 정렬 |
-| **1.98** | 2026-02-27 | 본문 가독성(line-height 1.8, margin-bottom 1.5em), 이미지 중앙 !important |
-| **1.99** | 2026-02-27 | 파비콘 400 오류 수정(app/icon.png → public/favicon.ico) |
-| **2.00** | 2026-02-27 | 관리자 블로그 에디터 풀페이지 리뉴얼: /admin/posts/manage/new, /edit/[id] |
+1. [Project Identity](#1-project-identity)
+2. [Tech Stack & Versions](#2-tech-stack--versions)
+3. [Directory Structure](#3-directory-structure)
+4. [Environment Variables](#4-environment-variables)
+5. [Database Schema](#5-database-schema)
+6. [Storage (Supabase)](#6-storage-supabase)
+7. [Authentication — Admin Only](#7-authentication--admin-only)
+8. [Public Navigation (5 Menus)](#8-public-navigation-5-menus)
+9. [Key Pages & Routes](#9-key-pages--routes)
+10. [API Routes](#10-api-routes)
+11. [Supabase Client Usage](#11-supabase-client-usage)
+12. [Blog System](#12-blog-system)
+13. [Editor (React-Quill) Conventions](#13-editor-react-quill-conventions)
+14. [Performance & SEO Rules](#14-performance--seo-rules)
+15. [New Supabase Project Setup](#15-new-supabase-project-setup)
+16. [Dev Commands](#16-dev-commands)
+17. [Intentionally Pinned Dependencies](#17-intentionally-pinned-dependencies)
+18. [Changelog](#18-changelog)
 
 ---
 
-## 3. 핵심 기능 구현 노하우
+## 1. Project Identity
 
-### 3.1 이미지 최적화
-
-| 항목 | 구현 방법 |
-|------|-----------|
-| **LCP 히어로 이미지** | `priority`, `fetchPriority="high"`, `sizes="(max-width: 768px) 100vw, 1200px"` |
-| **업로드 시 변환** | `lib/upload-image.ts`: createImageBitmap → Canvas → WebP(q85), 최대 1600px |
-| **EXIF 회전** | createImageBitmap이 EXIF orientation 자동 적용 후 Canvas 재인코딩 |
-| **일괄 최적화** | sharp로 1MB 이상 이미지 1200px 리사이즈 + WebP(q80) 변환 |
-| **Next.js Image** | `formats: ['image/avif', 'image/webp']`, Supabase remotePatterns 등록 |
-
-### 3.2 폰트·가독성 세팅
-
-| 항목 | 규칙 |
-|------|------|
-| **전역 폰트** | 기기 파편화 방지를 위해 `app/layout.tsx` 또는 `globals.css`에 CDN 방식(`@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");`) 최우선 적용 |
-| **에디터 전용** | Gowun Dodum, Nanum Myeongjo (preload: false — LCP 경쟁 방지) |
-| **금지** | `@import`로 무거운 웹폰트 로드, globals.css에 Quill CSS 전역 import |
-| **Quill CSS** | PostModal, blog/[id]에서만 lazy-load, `next/dynamic` ssr: false |
-| **뷰어 가독성** | `.blog-detail-article .ql-editor` 내부에 `line-height: 1.8 !important`, `p { margin-bottom: 1.5em !important; }` 적용하여 한글 최적화 여백 확보 |
-| **줄바꿈** | Tailwind prose 금지. `ql-editor` + `!important` 오버라이드로 강제 |
-| **이미지 강제 중앙 정렬** | 에디터 사진 크기 조절 시 좌측 쏠림 방지를 위해 `.ql-editor img { margin-left: auto !important; margin-right: auto !important; display: block; }` 강제 적용 |
-
-### 3.3 SEO
-
-| 항목 | 구현 |
-|------|------|
-| **메타데이터** | metadataBase, title template, Open Graph, robots, canonical |
-| **사이트맵** | `app/sitemap.ts` — 정적 라우트 + Supabase posts 동적 연동 |
-| **JSON-LD** | EducationalOrganization, WebSite 스키마 |
-| **네이버 인증** | verification.other["naver-site-verification"] |
-| **블로그 URL** | slug 우선, 없으면 id. `getBlogPostPath(slug, id)` |
-| **Viewport** | userScalable: false, maximumScale: 1 금지 (접근성 저하) |
-
-### 3.4 렌더링·캐싱
-
-| 페이지 | 설정 |
-|--------|------|
-| 블로그 목록 | `revalidate = 60`, `dynamic = "force-static"` |
-| 블로그 상세 | SSG/ISR |
-| admin, lessons, my-lessons | `force-dynamic` (ISR Writes 한도 회피) |
-
-### 3.5 React-Quill 에디터
-
-| 항목 | 규칙 |
-|------|------|
-| **로딩** | `next/dynamic` ssr: false, PostModal/PostEditor/blog 상세에서만 |
-| **폰트 크기** | px 단위 (10~36px), SizeStyle attributor whitelist |
-| **커스텀 폰트** | gowunDodum, nanumMyeongjo — CSS 변수로 스코프 |
-| **이미지** | Supabase Storage 업로드, Base64 금지 |
-| **뷰어** | `ql-snow` + `ql-editor`, prose 클래스 금지 |
-
-### 3.5-1 관리자 UI: 풀페이지 분리형 에디터 (v2.00)
-
-| 항목 | 규칙 |
-|------|------|
-| **목적** | 좁은 모달(팝업) 창의 한계를 벗어나 쾌적한 UX 제공 |
-| **레이아웃 구조 (7:3 황금비)** | **좌측 (Main Content):** `max-w-4xl` & `mx-auto`를 적용하여 방문자가 보는 블로그 폭과 100% 동일하게 에디터 크기 제한 (작성 중 줄바꿈 예측 가능)<br>**우측 (Sidebar):** 카테고리, 썸네일, SEO 설정 등 메타데이터 입력란을 `sticky top-20`으로 고정하여 스크롤 시에도 항상 따라다니도록 배치 |
-
-### 3.6 수업관리(LMS) 비즈니스 로직
-
-| 항목 | 설명 |
-|------|------|
-| **lessons** | user_id, category, current_session, is_active, payment_date |
-| **lesson_history** | lesson_id, session_number, completed_date, status(출석/결제 완료) |
-| **개인반** | 출석 체크 → lesson_history INSERT, current_session++ |
-| **단체반** | 납부 확인 → payment_date 업데이트, lesson_history status '결제 완료' |
-| **수업 갱신** | 기존 행 is_active=false 아카이브, 새 행 INSERT |
-| **수업 취소** | lesson_history 최신 레코드 삭제, current_session 재동기화 |
+| Field | Value |
+|-------|-------|
+| **Project name** | 삼척 성악 스튜디오 (Samcheok Vocal Studio) |
+| **Brand name** | 하마 보컬 스튜디오 |
+| **Studio owner** | 박준열 (Park Jun-yeol) |
+| **package.json name** | `samcheok-vocal` |
+| **Engine origin** | Gimpo Gugak Center codebase — stripped & repurposed |
+| **Domain** | `https://hama-vocal.com` (set via `NEXT_PUBLIC_SITE_URL`) |
+| **Supabase project ref** | `uastagwjudzjqgvngsdl` |
+| **Supabase URL** | `https://uastagwjudzjqgvngsdl.supabase.co` |
 
 ---
 
-## 4. 다음 프로젝트를 위한 초기 세팅 체크리스트
+## 2. Tech Stack & Versions
 
-### 4.1 프로젝트 생성
-- [ ] Next.js 16 App Router 프로젝트 생성
-- [ ] Tailwind CSS 설정
-- [ ] TypeScript 설정
+| Package | Version | Notes |
+|---------|---------|-------|
+| `next` | ^16.1.6 | App Router, Turbopack dev |
+| `react` / `react-dom` | ^18.3.1 | **Pinned at 18** — react-quill-new compat |
+| `typescript` | ^5 | |
+| `tailwindcss` | ^3.4.x | **Pinned at v3** — v4 is a full rewrite |
+| `@supabase/supabase-js` | ^2.98.0 | |
+| `@supabase/ssr` | ^0.9.0 | SSR cookie helpers |
+| `framer-motion` | ^12.x | Animations |
+| `lucide-react` | ^0.577.0 | Icons |
+| `react-quill-new` | ^3.8.3 | Rich-text editor (admin only) |
+| `quill-resize-module` | ^2.1.3 | Image resize in Quill |
+| `quill-html-edit-button` | ^3.0.0 | HTML source view in Quill |
+| `html-react-parser` | ^5.2.17 | |
+| `react-intersection-observer` | ^10.0.3 | |
+| `@next/bundle-analyzer` | ^16.1.6 | `ANALYZE=true npm run build` |
+| `@next/third-parties` | ^16.1.6 | Google Analytics wrapper |
+| `@vercel/analytics` | ^1.6.1 | |
+| `@vercel/speed-insights` | ^1.3.1 | |
+| `eslint` | ^9.x | **Pinned at 9** — eslint-config-next peer compat |
+| `eslint-config-next` | ^16.1.6 | |
 
-### 4.2 Supabase
-- [ ] 프로젝트 생성, URL·anon key 발급
-- [ ] `.env.local`에 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` 설정
-- [ ] RLS 정책 설계 (admin / member / public)
-- [ ] Storage 버킷 생성 (public-media 등)
+---
 
-### 4.3 성능·SEO
-- [ ] `next.config.ts`: `images.formats`, `experimental.inlineCss`, `optimizePackageImports`
-- [ ] 히어로 이미지: `priority`, `fetchPriority="high"`, `sizes` 적절히 설정
-- [ ] `app/layout.tsx`: viewport (userScalable 금지), metadata, JSON-LD
-- [ ] `app/sitemap.ts` 생성
-- [ ] `app/robots.ts` 필요 시 생성
+## 3. Directory Structure
 
-### 4.4 폰트
-- [ ] `next/font/google`로 전역 폰트만 로드
-- [ ] 에디터/특수 페이지용 폰트는 preload: false
-- [ ] `@import` 웹폰트 globals.css 사용 금지
-
-### 4.5 React-Quill (에디터 사용 시)
-- [ ] `next/dynamic` ssr: false로 lazy-load
-- [ ] quill.snow.css는 에디터/뷰어 컴포넌트에서만 import
-- [ ] globals.css에 Quill 줄바꿈·여백 !important 오버라이드
-- [ ] 이미지 업로드: Base64 대신 Storage URL
-
-### 4.6 버전·Changelog
-- [ ] `lib/changelog.ts` 생성, CHANGELOG 배열, CURRENT_VERSION export
-- [ ] 모든 changes 항목 한국어 작성
-- [ ] 의미 있는 변경마다 버전 증가
-
-### 4.7 환경 변수
-```text
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_SITE_URL=https://example.com
-# 관리자 전용: SUPABASE_SERVICE_ROLE_KEY (서버 API 라우트용)
+```
+samcheok/
+├── app/
+│   ├── layout.tsx               # Root layout: fonts, Navbar, Footer, JSON-LD
+│   ├── page.tsx                 # Home page (/)
+│   ├── intro/
+│   │   ├── page.tsx             # /intro — 박준열 profile (single page, no sub-menus)
+│   │   └── ProfilePhoto.tsx     # Profile photo component
+│   ├── blog/
+│   │   ├── page.tsx             # /blog — ISR list (revalidate: 60)
+│   │   ├── loading.tsx          # Suspense skeleton
+│   │   └── [id]/page.tsx        # /blog/[slug-or-id] — post detail
+│   ├── classes/
+│   │   ├── page.tsx             # /classes
+│   │   └── loading.tsx
+│   ├── activities/
+│   │   ├── page.tsx             # /activities
+│   │   └── loading.tsx
+│   ├── contact/page.tsx         # /contact
+│   ├── admin/
+│   │   ├── layout.tsx           # Admin shell layout
+│   │   ├── page.tsx             # /admin — dashboard (version + blog link)
+│   │   ├── login/page.tsx       # /admin/login — password form (public)
+│   │   └── posts/manage/
+│   │       ├── page.tsx         # /admin/posts/manage — CRUD list
+│   │       ├── new/page.tsx     # New post
+│   │       └── edit/[id]/page.tsx  # Edit post
+│   ├── api/
+│   │   ├── admin-login/route.ts # POST — validates password, sets cookie
+│   │   └── admin-logout/route.ts # POST — clears cookie
+│   └── sitemap.ts               # Auto-generated XML sitemap
+├── components/
+│   ├── layout/
+│   │   ├── Navbar.tsx           # Public nav (5 menus, no auth UI)
+│   │   └── Footer.tsx
+│   ├── PostEditor.tsx           # React-Quill admin editor (lazy-loaded)
+│   ├── BlogListClient.tsx       # Client-side blog list with category filter
+│   ├── BlogContent.tsx          # Blog post HTML renderer (ql-snow / ql-editor)
+│   ├── AnalyticsSpeedInsights.tsx
+│   └── GoogleAnalyticsWrapper.tsx
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts            # Browser client (Client Components)
+│   │   ├── server.ts            # SSR client (Server Components, Route Handlers)
+│   │   └── build.ts             # Build-time client (generateStaticParams, no cookies())
+│   ├── changelog.ts             # Version history (Korean entries required)
+│   ├── blog-utils.ts            # getBlogPostPath(slug, id)
+│   ├── date-utils.ts            # formatDateKST, formatDateTimeKST, toDatetimeLocalKST
+│   ├── fonts.ts                 # Font CSS variable helpers
+│   ├── html-utils.ts            # stripHtml, sanitizeHtml
+│   ├── storage-cleanup.ts       # Delete images from public-media on post delete
+│   └── upload-image.ts          # uploadBlogImage, normalizeImage
+├── supabase/
+│   ├── setup.sql                # Full DB setup — run once in Supabase SQL editor
+│   └── migration_add_updated_at.sql  # Migration if table was created without updated_at
+├── middleware.ts                 # Cookie-based admin guard (/admin/* except /admin/login)
+├── next.config.ts               # Next.js config (inlineCss, image remotePatterns)
+├── setup-db.mjs                 # node setup-db.mjs — auto-creates storage bucket
+└── .env.local                   # Secret env vars (NEVER commit to git)
 ```
 
-### 4.8 배포(Vercel)
-- [ ] Vercel 프로젝트 연결
-- [ ] 환경 변수 동기화
-- [ ] ISR/force-dynamic 페이지 구분 (쓰기 빈도 높은 페이지는 force-dynamic)
+---
+
+## 4. Environment Variables
+
+All variables live in `.env.local` (never commit to git).
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Public anon key (safe to expose in browser) |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Service role key — **server-side only**, bypasses RLS |
+| `ADMIN_PASSWORD` | ✅ | Admin login password (validated in `/api/admin-login`) |
+| `ADMIN_SECRET` | ✅ | Random token stored as `admin_session` cookie value |
+| `NEXT_PUBLIC_SITE_URL` | optional | Production domain. Defaults to `https://hama-vocal.com` |
+
+> **Security:** `SUPABASE_SERVICE_ROLE_KEY` must **never** be exposed to the browser.
+> It is only used in Server Components and Route Handlers.
 
 ---
 
-## 5. 웹 에이전시(B2B) 사업을 위한 모듈화(Lego) 분리 가이드
+## 5. Database Schema
 
-> 고객의 예산과 요구사항에 따라 필요한 기능만 조립하여 배포하는 전략
+Only one table is used: `public.posts`.
 
-### 📦 티어 1: Basic (정적 소개 홈페이지)
-* **대상:** 식당, 개인 프리랜서 등 정보 전달만 필요한 고객 (제작 목표: 1일)
-* **제거할 모듈:**
-  * Supabase 연동 코드 및 환경 변수 전체 삭제
-  * `app/admin` (관리자 대시보드) 폴더 전체 삭제
-  * `app/blog` (소식/칼럼) 라우트 삭제
-  * React-Quill 에디터 및 이미지 업로드(`lib/upload-image.ts`) 삭제
-* **남길 모듈:** Pretendard 폰트 세팅, Tailwind 반응형 레이아웃, 메타데이터(SEO) 뼈대
+```sql
+CREATE TABLE public.posts (
+  id               uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+  title            text        NOT NULL,
+  content          text        NOT NULL DEFAULT '',      -- Quill HTML
+  slug             text        UNIQUE,                   -- URL slug (nullable)
+  category         text        NOT NULL DEFAULT '스튜디오소식',
+  thumbnail_url    text,                                 -- public-media bucket URL
+  external_url     text,                                 -- optional external link
+  meta_title       text,                                 -- SEO title override
+  meta_description text,                                 -- SEO description override
+  meta_keywords    text,                                 -- SEO keywords override
+  views            integer     NOT NULL DEFAULT 0,
+  published_at     timestamptz,                          -- NULL=draft, future=scheduled
+  created_at       timestamptz NOT NULL DEFAULT now(),
+  updated_at       timestamptz NOT NULL DEFAULT now()    -- auto-updated by trigger
+);
+```
 
-### 📦 티어 2: Pro (블로그/CMS 포함 홈페이지)
-* **대상:** 학원, 병원, 전문직 등 지속적인 칼럼 연재와 콘텐츠 관리가 필요한 고객
-* **적용 모듈:** Gimpo Gugak Center v2.00 플레이북 100% 동일 적용
-* **세팅 변경점:**
-  * Supabase 새 프로젝트 생성 및 환경 변수 교체
-  * `sitemap.ts` 및 SEO Title을 해당 업체명으로 전체 치환
-  * 카테고리(예: '음악교실', '국악원소식')를 고객 비즈니스에 맞게 DB 수정
+### Indexes
+
+| Name | Column | Purpose |
+|------|--------|---------|
+| `idx_posts_published_at` | `published_at DESC` | Fast published-list queries |
+| `idx_posts_slug` | `slug` WHERE slug IS NOT NULL | Fast slug lookups |
+
+### updated_at auto-trigger
+
+```sql
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER trg_posts_updated_at
+  BEFORE UPDATE ON public.posts
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+```
+
+### Row Level Security (RLS)
+
+| Policy | Roles | Op | Condition |
+|--------|-------|----|-----------|
+| `Public read published posts` | anon, authenticated | SELECT | `published_at IS NOT NULL AND published_at <= now()` |
+| *(implicit bypass)* | service_role | ALL | Bypasses RLS — used for admin CRUD |
+
+### Post states
+
+| `published_at` | State |
+|----------------|-------|
+| `NULL` | Draft — invisible to public |
+| Future timestamp | Scheduled — invisible until that time |
+| Past/present timestamp | Published — visible to public |
+
+### Blog categories (current)
+
+`성악` · `보컬` · `민요` · `공연`
+
+*(defined in `components/PostEditor.tsx` as `BLOG_CATEGORIES`)*
 
 ---
 
-## 부록: 주요 파일 참조
+## 6. Storage (Supabase)
 
-| 파일 | 용도 |
-|------|------|
-| `lib/changelog.ts` | 버전·업데이트 내역 |
-| `lib/upload-image.ts` | 블로그 이미지 업로드·EXIF·WebP |
-| `lib/blog-utils.ts` | getBlogPostPath(slug, id) |
-| `lib/supabase/client.ts` | 브라우저 클라이언트 |
-| `lib/supabase/server.ts` | 서버 컴포넌트용 |
-| `app/sitemap.ts` | 동적 사이트맵 |
-| `CLAUDE.md` | AI 코딩 가이드 (본 플레이북과 함께 참고) |
+| Bucket | Public | Allowed MIME types | Max file size |
+|--------|--------|--------------------|---------------|
+| `public-media` | ✅ Yes | image/jpeg, image/png, image/webp, image/gif, image/svg+xml | 10 MB |
+
+**URL format:**
+```
+https://uastagwjudzjqgvngsdl.supabase.co/storage/v1/object/public/public-media/{path}
+```
+
+**Path conventions:**
+- Blog content images: `blog-content/{filename}`
+- Thumbnails: `blog-thumbnails/{filename}`
+
+**Image cleanup on post delete:** `lib/storage-cleanup.ts` → `deletePostStorageFiles(supabase, thumbnailUrl, content)`
+
+---
+
+## 7. Authentication — Admin Only
+
+### Mechanism
+- Stateless, password-based, HTTP-only cookie
+- No Supabase Auth — completely independent
+
+### Cookie spec
+
+| Property | Value |
+|----------|-------|
+| Name | `admin_session` |
+| Value | `ADMIN_SECRET` env var |
+| HttpOnly | `true` |
+| Secure | `true` (production only) |
+| SameSite | `strict` |
+| MaxAge | 7 days (604800 s) |
+
+### Login flow
+```
+/admin → middleware checks "admin_session" cookie
+  ├── Valid (matches ADMIN_SECRET) → proceed
+  └── Missing / invalid → redirect to /admin/login
+
+POST /api/admin-login { password }
+  ├── Matches ADMIN_PASSWORD → set cookie → redirect /admin
+  └── Wrong → 401 { error: "비밀번호가 올바르지 않습니다." }
+```
+
+### Logout flow
+```
+POST /api/admin-logout → set cookie maxAge=0 → 200 { ok: true }
+```
+
+### Middleware (`middleware.ts`)
+```ts
+// Protects: /admin/*
+// Exempts:  /admin/login
+// matcher: ["/admin/:path*"]
+```
+
+---
+
+## 8. Public Navigation (5 Menus)
+
+**STRICT — do not add/remove/reorder without updating CLAUDE.md**
+
+| # | Label | Route |
+|---|-------|-------|
+| 1 | 소개 | `/intro` |
+| 2 | 블로그 | `/blog` |
+| 3 | 수업 | `/classes` |
+| 4 | 활동 | `/activities` |
+| 5 | 문의 | `/contact` |
+
+Rules:
+- **No auth UI** (login/logout/member) in the public Navbar
+- No dropdowns, no sub-menus
+- No member-only menus
+
+---
+
+## 9. Key Pages & Routes
+
+| Route | File | Rendering | Notes |
+|-------|------|-----------|-------|
+| `/` | `app/page.tsx` | Server | Home |
+| `/intro` | `app/intro/page.tsx` | Server | 박준열 profile — no sub-menus |
+| `/blog` | `app/blog/page.tsx` | ISR (revalidate 60, force-static) | Post list |
+| `/blog/[id]` | `app/blog/[id]/page.tsx` | ISR (revalidate 60) | Detail — slug or UUID |
+| `/classes` | `app/classes/page.tsx` | Server | |
+| `/activities` | `app/activities/page.tsx` | Server | |
+| `/contact` | `app/contact/page.tsx` | Server | |
+| `/admin` | `app/admin/page.tsx` | force-dynamic | Dashboard |
+| `/admin/login` | `app/admin/login/page.tsx` | force-dynamic | Public — no cookie needed |
+| `/admin/posts/manage` | `app/admin/posts/manage/page.tsx` | force-dynamic | CRUD list |
+| `/admin/posts/manage/new` | `app/admin/posts/manage/new/page.tsx` | force-dynamic | |
+| `/admin/posts/manage/edit/[id]` | `…/edit/[id]/page.tsx` | force-dynamic | |
+
+---
+
+## 10. API Routes
+
+### `POST /api/admin-login`
+```json
+// Request body
+{ "password": "your-password" }
+
+// Success 200
+{ "ok": true }   + sets admin_session cookie
+
+// Failure 401
+{ "error": "비밀번호가 올바르지 않습니다." }
+```
+
+### `POST /api/admin-logout`
+```json
+// Success 200
+{ "ok": true }   + clears admin_session cookie (maxAge: 0)
+```
+
+---
+
+## 11. Supabase Client Usage
+
+| File | When to use |
+|------|-------------|
+| `lib/supabase/client.ts` | Client Components (`"use client"`) |
+| `lib/supabase/server.ts` | Server Components, Route Handlers (uses Next.js `cookies()`) |
+| `lib/supabase/build.ts` | `generateStaticParams`, build-time queries (no request context) |
+
+**`lib/supabase/server.ts`** uses `createServerClient` from `@supabase/ssr` which auto-reads/writes cookies.
+
+**`lib/supabase/build.ts`** uses bare `createClient` from `@supabase/supabase-js` (no cookie dependency — safe in `generateStaticParams` and `next build`).
+
+---
+
+## 12. Blog System
+
+### Public list (`/blog`)
+- `revalidate = 60`, `force-static`
+- Columns: `id, slug, title, external_url, created_at, published_at, category`
+- Filter: `published_at <= now()`
+- Sort: `published_at DESC`
+- UI: Title (left) | dotted border | date (right) — no thumbnails, no snippets
+
+### Post detail (`/blog/[id]`)
+- Resolves param as `slug` first, then falls back to `id` (UUID)
+- URL helper: `getBlogPostPath(slug | null, id)` — uses slug when available
+- Columns: `id, title, content, slug, created_at, published_at, thumbnail_url, meta_title, meta_description, meta_keywords, category`
+- Includes prev/next navigation
+
+### Admin CRUD (`/admin/posts/manage`)
+- List with search (title/content) + pagination (10/15/30/50/100 per page)
+- Scheduled posts shown with amber badge + timestamp
+- Deletion removes associated storage files via `deletePostStorageFiles`
+- Editor: React-Quill with image upload to `public-media/blog-content/`
+
+---
+
+## 13. Editor (React-Quill) Conventions
+
+### MANDATORY: Lazy loading
+```tsx
+// In PostEditor.tsx
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+```
+`quill.snow.css` imported only in:
+- `app/blog/[id]/page.tsx` (detail page viewer)
+- `components/PostEditor.tsx` (via dynamic import chain)
+
+**NEVER** import `quill.snow.css` in `globals.css` or `app/layout.tsx`.
+
+### MANDATORY: Blog content viewer
+```tsx
+<div className="ql-snow">
+  <div
+    className="ql-editor"
+    dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
+    style={{ padding: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+  />
+</div>
+```
+`prose` Tailwind class is **banned** for blog content rendering.
+
+### Font sizes (whitelist)
+`10px 12px 14px 16px 18px 20px 24px 28px 32px 36px`
+
+### Custom fonts (whitelist)
+`gowunDodum` · `nanumMyeongjo`
+
+---
+
+## 14. Performance & SEO Rules
+
+| Rule | Implementation |
+|------|---------------|
+| Fonts via `next/font/google` only | No `@import` in any CSS file |
+| Heavy fonts (`preload: false`) | Gowun Dodum, Nanum Myeongjo — loaded but not preloaded |
+| Hero image `priority` | Must be set on the main above-fold image (LCP) |
+| Viewport | Never `userScalable: false` or `maximumScale: 1` |
+| CSS inlining | `experimental.inlineCss: true` in `next.config.ts` |
+| Package imports | `optimizePackageImports: ['lucide-react', 'date-fns']` |
+| Admin pages | `export const dynamic = "force-dynamic"` |
+| Public blog list | `export const revalidate = 60` + `export const dynamic = "force-static"` |
+| Bundle analysis | `ANALYZE=true npm run build` |
+
+---
+
+## 15. New Supabase Project Setup
+
+Run this checklist every time you migrate to a new Supabase project.
+
+### Step 1 — Update `.env.local`
+```
+NEXT_PUBLIC_SUPABASE_URL=https://<new-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<new-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<new-service-role-key>
+```
+
+### Step 2 — Update `next.config.ts`
+Change the `hostname` in `images.remotePatterns` to the new project ref.
+
+### Step 3 — Auto-create storage bucket
+```bash
+node setup-db.mjs
+```
+Creates `public-media` (public, 10 MB limit, image types).
+
+### Step 4 — Create posts table (manual, one-time)
+1. Open **Supabase Dashboard → SQL Editor → New query**
+2. Paste full contents of `supabase/setup.sql`
+3. Click **Run**
+
+### Step 5 — If table was already created without `updated_at`
+Run `supabase/migration_add_updated_at.sql` in the SQL editor.
+
+### Step 6 — Verify
+```bash
+node setup-db.mjs
+# Expected: ✅ Storage bucket "public-media" already exists
+#           ✅ Table "posts" already exists.
+#           🎉  Database is fully set up and ready for production!
+```
+
+---
+
+## 16. Dev Commands
+
+```bash
+npm run dev                   # Dev server (Turbopack)
+npm run build                 # Production build
+npm run start                 # Production server
+npm run lint                  # ESLint check
+
+ANALYZE=true npm run build    # Bundle size analysis
+
+node setup-db.mjs             # Create storage bucket + verify posts table
+```
+
+---
+
+## 17. Intentionally Pinned Dependencies
+
+**Do NOT upgrade these without a full migration plan.**
+
+| Package | Pinned at | Latest | Reason |
+|---------|-----------|--------|--------|
+| `react` / `react-dom` | 18.x | 19.x | `react-quill-new` is not React 19 compatible |
+| `@types/react` / `@types/react-dom` | 18.x | 19.x | Must match React 18 |
+| `tailwindcss` | 3.x | 4.x | v4 uses a completely different config format — upgrading breaks all CSS |
+| `eslint` | 9.x | 10.x | `eslint-config-next` plugins (`typescript-eslint`, `eslint-plugin-react`, etc.) declare peer `eslint ^8 \|\| ^9` — ESLint 10 causes unresolvable peer conflicts |
+
+---
+
+## 18. Changelog
+
+| Version | Date | Summary |
+|---------|------|---------|
+| v1.03 | 2026-03-09 | 새 Supabase 프로젝트 마이그레이션 완료: posts 테이블·RLS·인덱스·updated_at 컬럼·트리거 설정, public-media 스토리지 버킷 자동 생성. 패키지 업데이트: @supabase/supabase-js 2.98, @supabase/ssr 0.9, framer-motion 12, lucide-react 0.577, postcss 8.5.8, quill-resize-module 2.1.3. ESLint 9로 다운그레이드(peer 호환 복원). 미사용 auth-ui 패키지 2종 제거. next.config.ts 이미지 호스트명 수정. package.json name "samcheok-vocal"로 변경. PROJECT_PLAYBOOK.md 전면 재작성. |
+| v1.02 | 2026-03-08 | 코드베이스 대규모 정리: 김포국악원 잔여 라우트·컴포넌트·공개 파일 완전 제거, 블로그 카테고리 스튜디오 중심으로 교체, 메타데이터 하마 보컬 스튜디오로 전면 교체 |
+| v1.01 | 2026-03-08 | 삼척 성악 스튜디오 초기 셋업: 5개 공개 메뉴 정리, 사용자 인증 완전 제거, 소개 페이지 박준열 단독 프로필로 전환, 관리자 인증을 패스워드+쿠키 방식으로 교체 |
+| v1.00 | 2026-03-08 | 김포국악원 엔진 기반으로 삼척 성악 스튜디오 프로젝트 시작 |

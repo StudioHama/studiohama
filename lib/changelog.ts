@@ -10,6 +10,22 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.03",
+    date: "2026-03-09",
+    changes: [
+      "새 Supabase 프로젝트 마이그레이션 완료 (uastagwjudzjqgvngsdl).",
+      "posts 테이블 신규 생성: 전체 컬럼(id, title, content, slug, category, thumbnail_url, external_url, meta_title, meta_description, meta_keywords, views, published_at, created_at, updated_at), RLS 정책, 인덱스, updated_at 자동 트리거 포함.",
+      "public-media 스토리지 버킷 자동 생성 (setup-db.mjs 스크립트).",
+      "@supabase/supabase-js 2.98.0, @supabase/ssr 0.9.0으로 업그레이드.",
+      "framer-motion 12.x, lucide-react 0.577.0, postcss 8.5.8, quill-resize-module 2.1.3으로 업그레이드.",
+      "ESLint 10에서 9로 다운그레이드 (eslint-config-next peer 호환성 복원).",
+      "미사용 패키지 제거: @supabase/auth-ui-react, @supabase/auth-ui-shared.",
+      "next.config.ts 이미지 remotePatterns 호스트명 신규 Supabase 프로젝트로 수정.",
+      "package.json name을 'gimpo-gugak'에서 'samcheok-vocal'로 변경.",
+      "PROJECT_PLAYBOOK.md 삼척 성악 스튜디오 기준으로 전면 재작성.",
+    ],
+  },
+  {
     version: "1.02",
     date: "2026-03-08",
     changes: [
@@ -46,4 +62,4 @@ export const CHANGELOG: ChangelogEntry[] = [
   },
 ];
 
-export const CURRENT_VERSION = CHANGELOG[0]?.version ?? "1.02";
+export const CURRENT_VERSION = CHANGELOG[0]?.version ?? "1.03";

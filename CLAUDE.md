@@ -148,7 +148,7 @@ The public navigation MUST have **exactly** these 5 menus in this order:
 
 Only the `posts` table is used. No user-related tables.
 
-- `posts` — Blog post records (title, content, slug, category, published_at, views)
+- `posts` — Blog post records (id, title, content, slug, category, thumbnail_url, external_url, meta_title, meta_description, meta_keywords, views, published_at, created_at, updated_at)
 
 **Supabase Clients:**
 - `lib/supabase/client.ts` — Browser (Client Components)
@@ -180,7 +180,7 @@ ANALYZE=true npm run build  # Bundle analysis
 - Version and changelog live in `lib/changelog.ts`.
 - All `changes` entries must be in **Korean**.
 - Increment version for each significant change.
-- Current version: **v1.02**
+- Current version: **v1.03**
 
 ---
 
@@ -188,6 +188,7 @@ ANALYZE=true npm run build  # Bundle analysis
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.03 | 2026-03-09 | 새 Supabase 프로젝트 마이그레이션: posts 테이블·RLS·updated_at 설정, public-media 버킷 자동 생성, 패키지 업데이트, auth-ui 제거, next.config.ts 호스트명 수정 |
 | v1.02 | 2026-03-08 | 코드베이스 대규모 정리: 김포국악원 잔여 라우트·컴포넌트·공개 파일 완전 제거, 블로그 카테고리 스튜디오 중심으로 교체, 메타데이터 하마 보컬 스튜디오로 전면 교체 |
 | v1.01 | 2026-03-08 | 삼척 성악 스튜디오 초기 셋업: 5개 공개 메뉴 정리, 사용자 인증 완전 제거, 소개 페이지 박준열 단독 프로필로 전환, 관리자 인증을 패스워드+쿠키 방식으로 교체 |
 | v1.00 | 2026-03-08 | 김포국악원 엔진 기반으로 삼척 성악 스튜디오 프로젝트 시작 |
