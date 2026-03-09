@@ -13,19 +13,12 @@ export const CHANGELOG: ChangelogEntry[] = [
     version: "1.10",
     date: "2026-03-09",
     changes: [
-      "app/activities/page.tsx: 텍스트 리스트 레이아웃을 인스타그램 스타일 이미지 갤러리(grid-cols-2 / md:grid-cols-3)로 전면 재설계.",
-      "사진이 있는 항목만 갤러리에 표시, 사진 없는 항목은 제외.",
-      "SEO 전략: alt 텍스트에 제목·연도·카테고리·설명을 결합하여 검색 크롤러가 각 사진의 맥락을 완전히 인덱싱하도록 구성. 시각적으로는 텍스트 없는 깔끔한 사진첩 유지.",
+      "활동 페이지 갤러리 레이아웃을 masonry 방식(columns-2 / md:columns-3)으로 재설계: 각 사진이 원본 비율(natural aspect ratio)을 유지하며 자연스럽게 배치됨.",
+      "이미지를 fill 모드에서 width/height 고정 모드로 전환(800×600 기준), 화면 너비에 따라 h-auto로 자동 조정.",
+      "SEO alt 텍스트 전략 확정: '제목 | 연도 | 설명' 파이프 구분자 형식으로 크롤러 인덱싱 최적화.",
       "호버 오버레이: 마우스 오버 시 제목·연도·카테고리 정보가 반투명 레이어로 부드럽게 표시됨.",
-    ],
-  },
-  {
-    version: "1.08",
-    date: "2026-03-09",
-    changes: [
-      "활동 공개 페이지(/activities) 연동 버그 수정: dynamic='force-dynamic'으로 전환하여 매 요청마다 최신 데이터 렌더링 (빌드 시 Invalid API key로 빈 정적 페이지 생성되던 문제 해결).",
-      "활동 관리 API(POST/PATCH/DELETE)에 revalidatePath('/activities') 및 revalidatePath('/') 추가.",
-      "Supabase 쿼리 error 필드 명시적 확인 및 콘솔 기록 추가.",
+      "활동 공개 페이지 force-dynamic 전환: 빌드 시 Invalid API key로 빈 정적 페이지가 생성되던 버그 해결.",
+      "활동 관리 API(POST/PATCH/DELETE)에 revalidatePath('/activities') 추가 — 관리자 수정 후 즉시 캐시 무효화.",
     ],
   },
   {

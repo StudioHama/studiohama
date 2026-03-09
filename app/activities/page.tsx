@@ -55,30 +55,29 @@ export default async function ActivitiesPage() {
           <p className="text-xs mt-1">곧 공연 및 활동 이력이 업데이트됩니다.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+        <div className="columns-2 md:columns-3 gap-4">
           {withPhoto.map((item) => {
             // SEO용 alt 텍스트: 제목 + 연도 + 카테고리 + 설명
             const altText = [
               item.title,
               item.year,
-              item.category,
               item.description,
             ]
               .filter(Boolean)
-              .join(" · ");
+              .join(" | ");
 
             return (
               <div
                 key={item.id}
-                className="group relative aspect-square overflow-hidden rounded-lg bg-gray-100"
+                className="group relative break-inside-avoid mb-4 overflow-hidden rounded-lg"
                 title={altText}
               >
                 <Image
                   src={item.image_url!}
                   alt={altText}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 768px) 50vw, 33vw"
+                  width={800}
+                  height={600}
+                  className="w-full h-auto transition-transform duration-500 group-hover:scale-105 block"
                 />
                 {/* 호버 오버레이 — 텍스트는 시각적으로 숨겨두되 접근성 유지 */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-end p-3 opacity-0 group-hover:opacity-100">
